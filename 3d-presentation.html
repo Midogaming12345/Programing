@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Word Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            max-width: 900px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .word-title {
+            font-size: 5em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: float 3s ease-in-out infinite;
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .definition {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #ffd700;
+        }
+
+        .example {
+            font-size: 1.4em;
+            line-height: 1.6;
+            color: #e0e0e0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .game-content {
+            text-align: left;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+
+        .game-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .game-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .game-content::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 10px;
+        }
+
+        .game-title {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .game-section h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .game-section p, .game-section li {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+
+        .game-section ul {
+            list-style-position: inside;
+            padding-left: 20px;
+        }
+
+        .script-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 30px;
+            font-size: 1.2em;
+            color: white;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .word-title {
+                font-size: 3em;
+            }
+            .game-title {
+                font-size: 2.5em;
+            }
+            .definition {
+                font-size: 1.3em;
+            }
+            .example {
+                font-size: 1.1em;
+            }
+            .game-section h3 {
+                font-size: 1.5em;
+            }
+            .game-section p, .game-section li {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <!-- Slide 1: Disentangle -->
+    <div class="slide active" id="slide-1">
+        <div class="word-title">🧶 Disentangle</div>
+        <div class="definition">To separate or free something from a tangle.</div>
+        <div class="example">
+            <strong>Example:</strong> She had to disentangle the wires to fix the lamp.
+        </div>
+    </div>
+
+    <!-- Slide 2: Alight -->
+    <div class="slide" id="slide-2">
+        <div class="word-title">🦋 Alight</div>
+        <div class="definition">To come down from the air and settle; to descend and rest.</div>
+        <div class="example">
+            <strong>Example:</strong> The butterfly alighted on the flower petal.
+        </div>
+    </div>
+
+    <!-- Slide 3: Cat -->
+    <div class="slide" id="slide-3">
+        <div class="word-title">🐱 Cat</div>
+        <div class="definition">A small domesticated carnivorous mammal.</div>
+        <div class="example">
+            <strong>Example:</strong> The cat chased the mouse across the yard.
+        </div>
+    </div>
+
+    <!-- Slide 4: Hurry -->
+    <div class="slide" id="slide-4">
+        <div class="word-title">⚡ Hurry</div>
+        <div class="definition">To move or act with haste.</div>
+        <div class="example">
+            <strong>Example:</strong> We must hurry to catch the train.
+        </div>
+    </div>
+
+    <!-- Slide 5: Hungry -->
+    <div class="slide" id="slide-5">
+        <div class="word-title">🍽️ Hungry</div>
+        <div class="definition">Feeling a need for food; famished.</div>
+        <div class="example">
+            <strong>Example:</strong> After the hike, I was so hungry I ate two sandwiches.
+        </div>
+    </div>
+
+    <!-- Slide 6: Game Time -->
+    <div class="slide" id="slide-6">
+        <div class="game-title">🎮 Game Time!</div>
+        <div class="game-content">
+            <div class="game-section">
+                <h3><span class="emoji">🕵️</span>Word Spy Game</h3>
+                <p>This is a fun word-guessing game called "Word Spy" (inspired by games like "Who is the Spy?"). There are 7 players. 6 players secretly know one of the words from this presentation (e.g., "disentangle" – you can choose or randomize it). The 7th player (the "spy") doesn't know the word and must bluff to avoid being caught.</p>
+            </div>
+
+            <div class="game-section">
+                <h3><span class="emoji">📋</span>Rules</h3>
+                <ul>
+                    <li>Players 1-7 sit in a circle.</li>
+                    <li>The game master assigns the word to 6 players and tells them it's a secret. The 7th doesn't get it.</li>
+                    <li>Questions go in a chain: Player 2 asks Player 3, Player 3 asks Player 1, and so on (looping back). Each question must relate to the word (e.g., "Is it an animal?").</li>
+                    <li>After 10 questions, vote on who the spy is.</li>
+                    <li>The spy wins if they guess the word correctly at the end; others win if they identify the spy.</li>
+                </ul>
+            </div>
+
+            <div class="game-section">
+                <h3><span class="emoji">🎬</span>Sample Script</h3>
+                <p><strong>Setup:</strong> Player 1 is the spy. The word is "cat".</p>
+                
+                <div class="script-item">
+                    <strong>Round 1:</strong> Player 2 asks Player 3: "Does it have fur?"<br>
+                    <em>Player 3 (knowing it's "cat"): "Yes."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 2:</strong> Player 3 asks Player 1: "Is it something you can pet?"<br>
+                    <em>Player 1 (as spy, trying to blend in): "Yes."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 3:</strong> Player 1 asks Player 4: "Does it live in a house?"<br>
+                    <em>Player 4: "Yes."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 4:</strong> Player 4 asks Player 5: "Is it bigger than a dog?"<br>
+                    <em>Player 5: "No."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 5:</strong> Player 5 asks Player 6: "Does it meow?"<br>
+                    <em>Player 6: "Yes."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 6:</strong> Player 6 asks Player 7: "Is it a cat?"<br>
+                    <em>Player 7: "Yes."</em>
+                </div>
+
+                <div class="script-item">
+                    <strong>Round 7:</strong> Player 7 asks Player 2: "Can it climb trees?"<br>
+                    <em>Player 2: "Yes."</em>
+                </div>
+
+                <p style="margin-top: 20px;"><strong>Continue the chain for more rounds. The spy might slip up by giving wrong answers!</strong></p>
+                <p><strong>End the game by revealing the word and spy. Play multiple rounds with different words!</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">6</span>
+        </div>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        // Three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create 3D objects for each slide
+        const geometries = [];
+        const materials = [];
+        const meshes = [];
+
+        // Slide 1: Tangled ropes (torus knot)
+        geometries.push(new THREE.TorusKnotGeometry(2, 0.5, 100, 16));
+        materials.push(new THREE.MeshPhongMaterial({ 
+            color: 0xff6b6b, 
+            wireframe: false,
+            shininess: 100
+        }));
+
+        // Slide 2: Bird/butterfly (cone)
+        geometries.push(new THREE.ConeGeometry(1.5, 3, 8));
+        materials.push(new THREE.MeshPhongMaterial({ 
+            color: 0x4ecdc4,
+            shininess: 100
+        }));
+
+        // Slide 3: Cat (sphere with ears)
+        const catGroup = new THREE.Group();
+        const catHead = new THREE.Mesh(
+            new THREE.SphereGeometry(1.5, 32, 32),
+            new THREE.MeshPhongMaterial({ color: 0xffa500, shininess: 100 })
+        );
+        const ear1 = new THREE.Mesh(
+            new THREE.ConeGeometry(0.5, 1, 4),
+            new THREE.MeshPhongMaterial({ color: 0xffa500, shininess: 100 })
+        );
+        ear1.position.set(-0.8, 1.2, 0);
+        const ear2 = ear1.clone();
+        ear2.position.set(0.8, 1.2, 0);
+        catGroup.add(catHead);
+        catGroup.add(ear1);
+        catGroup.add(ear2);
+        meshes.push(catGroup);
+
+        // Slide 4: Speed arrows (cylinder)
+        geometries.push(new THREE.CylinderGeometry(0.5, 0.5, 4, 32));
+        materials.push(new THREE.MeshPhongMaterial({ 
+            color: 0xffeb3b,
+            shininess: 100
+        }));
+
+        // Slide 5: Empty plate (torus)
+        geometries.push(new THREE.TorusGeometry(2, 0.3, 16, 100));
+        materials.push(new THREE.MeshPhongMaterial({ 
+            color: 0x9c27b0,
+            shininess: 100
+        }));
+
+        // Slide 6: Game circle (dodecahedron)
+        geometries.push(new THREE.DodecahedronGeometry(2));
+        materials.push(new THREE.MeshPhongMaterial({ 
+            color: 0x00ff00,
+            shininess: 100
+        }));
+
+        // Create meshes (except cat which is already a group)
+        for (let i = 0; i < geometries.length; i++) {
+            if (i !== 2) { // Skip cat (index 2)
+                meshes.push(new THREE.Mesh(geometries[i], materials[i]));
+            }
+        }
+
+        // Position camera
+        camera.position.z = 8;
+
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xffffff, 1);
+        pointLight1.position.set(5, 5, 5);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xff00ff, 0.8);
+        pointLight2.position.set(-5, -5, 5);
+        scene.add(pointLight2);
+
+        // Add current mesh to scene
+        let currentMesh = meshes[0];
+        scene.add(currentMesh);
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate current mesh
+            if (currentMesh) {
+                currentMesh.rotation.x += 0.01;
+                currentMesh.rotation.y += 0.01;
+            }
+
+            // Animate lights
+            const time = Date.now() * 0.001;
+            pointLight1.position.x = Math.sin(time) * 5;
+            pointLight1.position.y = Math.cos(time) * 5;
+            pointLight2.position.x = Math.cos(time) * 5;
+            pointLight2.position.y = Math.sin(time) * 5;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Slide navigation
+        function updateSlide() {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show current slide
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+            // Update counter
+            document.getElementById('current-slide').textContent = currentSlide;
+
+            // Update buttons
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+
+            // Update 3D object
+            scene.remove(currentMesh);
+            currentMesh = meshes[currentSlide - 1];
+            scene.add(currentMesh);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
