@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary & Spy Game Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            overflow: hidden;
+            background: #000;
+            perspective: 1000px;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            transform-style: preserve-3d;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateZ(-500px) rotateY(-20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateZ(0) rotateY(0);
+            }
+        }
+
+        .slide-content {
+            text-align: center;
+            color: #fff;
+            z-index: 10;
+            max-width: 900px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+            transform-style: preserve-3d;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateZ(50px); }
+            50% { transform: translateY(-20px) translateZ(80px); }
+        }
+
+        .word-title {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
+            50% { text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff, 0 0 80px #00ffff; }
+        }
+
+        .definition {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .example {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #b0e0e6;
+        }
+
+        .scene-image {
+            width: 400px;
+            height: 300px;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.5);
+            transform: translateZ(100px);
+            animation: rotate3d 10s linear infinite;
+        }
+
+        @keyframes rotate3d {
+            0% { transform: translateZ(100px) rotateY(0deg); }
+            100% { transform: translateZ(100px) rotateY(360deg); }
+        }
+
+        /* Game Slides Styling */
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+            animation: glowPurple 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPurple {
+            0%, 100% { text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff; }
+            50% { text-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 80px #ff00ff; }
+        }
+
+        .game-description {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .rules-list {
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+
+        .rules-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Role Assignment Boxes */
+        .boxes-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            perspective: 1000px;
+        }
+
+        .role-box {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .role-box.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .box-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .box-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 1.5rem;
+        }
+
+        .box-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: rotateY(180deg);
+            font-size: 0.8rem;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .box-back.spy {
+            background: linear-gradient(135deg, #ff0000 0%, #8b0000 100%);
+        }
+
+        /* Voting Section */
+        .voting-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .player-vote {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .player-vote:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .player-vote.selected {
+            background: rgba(255, 215, 0, 0.5);
+            border-color: #ffd700;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.8);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 1.5rem;
+            color: #00ffff;
+            z-index: 1000;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Particles Background */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: particleFloat 10s linear infinite;
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .reveal-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.5);
+            transition: all 0.3s;
+        }
+
+        .reveal-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.8);
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 2px solid #ff0000;
+            font-size: 1.5rem;
+            animation: revealPulse 1s ease-out;
+        }
+
+        @keyframes revealPulse {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / 14
+        </div>
+
+        <!-- Slide 1: Abscond -->
+        <div class="slide active" id="slide1">
+            <div class="particles" id="particles1"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #2c3e50, #34495e); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🏃💨</div>
+                <h1 class="word-title">Abscond</h1>
+                <p class="definition">Definition: To leave hurriedly and secretly, typically to avoid detection.</p>
+                <p class="example">Example: The prisoner absconded from the jail under cover of night.</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Access -->
+        <div class="slide" id="slide2">
+            <div class="particles" id="particles2"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #8e44ad, #9b59b6); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🚪✨</div>
+                <h1 class="word-title">Access</h1>
+                <p class="definition">Definition: The means or opportunity to approach or enter a place.</p>
+                <p class="example">Example: She used her keycard to gain access to the secure building.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arduous -->
+        <div class="slide" id="slide3">
+            <div class="particles" id="particles3"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #16a085, #1abc9c); display: flex; align-items: center; justify-content: center; font-size: 3rem;">⛰️💪</div>
+                <h1 class="word-title">Arduous</h1>
+                <p class="definition">Definition: Involving or requiring strenuous effort; difficult.</p>
+                <p class="example">Example: The arduous hike up the mountain left us exhausted.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Disentangle -->
+        <div class="slide" id="slide4">
+            <div class="particles" id="particles4"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #e67e22, #f39c12); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🪢➡️</div>
+                <h1 class="word-title">Disentangle</h1>
+                <p class="definition">Definition: To separate or free something from a tangle.</p>
+                <p class="example">Example: He had to disentangle the fishing line from the weeds.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Fated -->
+        <div class="slide" id="slide5">
+            <div class="particles" id="particles5"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🔮✨</div>
+                <h1 class="word-title">Fated</h1>
+                <p class="definition">Definition: Determined by fate; destined.</p>
+                <p class="example">Example: It seemed fated that they would meet again.</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Intrepid -->
+        <div class="slide" id="slide6">
+            <div class="particles" id="particles6"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #c0392b, #e74c3c); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🦸⚔️</div>
+                <h1 class="word-title">Intrepid</h1>
+                <p class="definition">Definition: Fearless and adventurous.</p>
+                <p class="example">Example: The intrepid journalist traveled to war zones to report the truth.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Pompous -->
+        <div class="slide" id="slide7">
+            <div class="particles" id="particles7"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #2980b9, #3498db); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🦚👑</div>
+                <h1 class="word-title">Pompous</h1>
+                <p class="definition">Definition: Affectedly and irritatingly grand, solemn, or self-important.</p>
+                <p class="example">Example: His pompous speech made everyone roll their eyes.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Precipice -->
+        <div class="slide" id="slide8">
+            <div class="particles" id="particles8"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #34495e, #2c3e50); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🏔️⚠️</div>
+                <h1 class="word-title">Precipice</h1>
+                <p class="definition">Definition: A very steep rock face or cliff, typically a tall one.</p>
+                <p class="example">Example: They stood on the precipice, gazing at the valley below.</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Reprieve -->
+        <div class="slide" id="slide9">
+            <div class="particles" id="particles9"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71); display: flex; align-items: center; justify-content: center; font-size: 3rem;">⏰⚖️</div>
+                <h1 class="word-title">Reprieve</h1>
+                <p class="definition">Definition: A cancellation or postponement of a punishment.</p>
+                <p class="example">Example: The storm gave us a reprieve from the heatwave.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Revile -->
+        <div class="slide" id="slide10">
+            <div class="particles" id="particles10"></div>
+            <div class="slide-content">
+                <div class="scene-image" style="background: linear-gradient(135deg, #c0392b, #e74c3c); display: flex; align-items: center; justify-content: center; font-size: 3rem;">😠🗣️</div>
+                <h1 class="word-title">Revile</h1>
+                <p class="definition">Definition: To criticize in an abusive or angrily insulting manner.</p>
+                <p class="example">Example: The fans reviled the referee for the bad call.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Game Introduction -->
+        <div class="slide" id="slide11">
+            <div class="particles" id="particles11"></div>
+            <div class="slide-content" style="max-width: 1000px;">
+                <div class="scene-image" style="background: linear-gradient(135deg, #8e44ad, #9b59b6); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🕵️🔍</div>
+                <h1 class="game-title">Who is the Spy?</h1>
+                <div class="game-description">
+                    <p><strong>Game Description:</strong> A thrilling bluffing game for 14 players. 13 players secretly know the word (they're "in"); 1 is the spy and doesn't know it. Players ask yes/no questions in a chain to deduce who the spy is. The spy wins by guessing the word; others win by voting out the spy. Play multiple rounds with random words!</p>
+                </div>
+                <ul class="rules-list">
+                    <li><strong>1.</strong> Randomly select a word from the 10 (e.g., roll a die: 1=Abscond, 2=Access, etc.).</li>
+                    <li><strong>2.</strong> Assign roles on the next slide.</li>
+                    <li><strong>3.</strong> Questions: Chain them (Player 1 asks Player 2, 2 asks 3, etc.). Must relate to the word.</li>
+                    <li><strong>4.</strong> After 10-15 questions, move to voting.</li>
+                    <li><strong>5.</strong> Spy guesses the word at the end.</li>
+                </ul>
+                <p class="example"><strong>Sample Question Chain (for word "Intrepid"):</strong> Player 1 asks Player 2: "Is it related to bravery?" (Yes.) Player 2 asks Player 3: "Does it mean fearless?" (Yes.) And so on—the spy bluffs!</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Role Assignment -->
+        <div class="slide" id="slide12">
+            <div class="particles" id="particles12"></div>
+            <div class="slide-content" style="max-width: 1100px;">
+                <h1 class="game-title">Reveal Your Roles!</h1>
+                <p class="definition">Click each box to reveal your role. Memorize it and close the box!</p>
+                <p class="example" style="margin-bottom: 10px;">Selected Word: <strong id="selectedWord">Loading...</strong></p>
+                <div class="boxes-grid" id="rolesGrid"></div>
+                <button class="reset-btn" onclick="resetBoxes()">Reset All Boxes</button>
+            </div>
+        </div>
+
+        <!-- Slide 13: Voting -->
+        <div class="slide" id="slide13">
+            <div class="particles" id="particles13"></div>
+            <div class="slide-content" style="max-width: 1000px;">
+                <div class="scene-image" style="background: linear-gradient(135deg, #e74c3c, #c0392b); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🗳️👆</div>
+                <h1 class="game-title">Voting Time: Who is the Spy?</h1>
+                <p class="definition">After questions, each player votes. Click on the player you suspect!</p>
+                <div class="voting-grid" id="votingGrid"></div>
+                <button class="reveal-btn" onclick="tallyVotes()">Tally Votes</button>
+                <div id="votingResults" class="reveal-content"></div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Reveal -->
+        <div class="slide" id="slide14">
+            <div class="particles" id="particles14"></div>
+            <div class="slide-content" style="max-width: 1000px;">
+                <div class="scene-image" style="background: linear-gradient(135deg, #f39c12, #e67e22); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🎭🎉</div>
+                <h1 class="game-title">Reveal: Who is the Real Spy?</h1>
+                <button class="reveal-btn" onclick="revealSpy()">Reveal the Spy!</button>
+                <div id="spyReveal" class="reveal-content"></div>
+                <p class="example" style="margin-top: 20px;">Play again with a new random word!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 14;
+        const words = ['Abscond', 'Access', 'Arduous', 'Disentangle', 'Fated', 'Intrepid', 'Pompous', 'Precipice', 'Reprieve', 'Revile'];
+        let selectedWord = '';
+        let spyIndex = -1;
+        let votes = {};
+
+        // Initialize particles
+        function createParticles() {
+            for (let i = 1; i <= 14; i++) {
+                const container = document.getElementById(`particles${i}`);
+                if (container) {
+                    for (let j = 0; j < 30; j++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 10 + 's';
+                        particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                        container.appendChild(particle);
+                    }
+                }
+            }
+        }
+
+        // Change slide
+        function changeSlide(direction) {
+            const slides = document.querySelectorAll('.slide');
+            slides[currentSlide - 1].classList.remove('active');
+            
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // Initialize game elements when reaching game slides
+            if (currentSlide === 12) {
+                initializeRoles();
+            } else if (currentSlide === 13) {
+                initializeVoting();
+            }
+        }
+
+        // Initialize role assignment
+        function initializeRoles() {
+            // Select random word
+            selectedWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('selectedWord').textContent = selectedWord;
+            
+            // Select random spy
+            spyIndex = Math.floor(Math.random() * 14);
+            
+            // Create boxes
+            const grid = document.getElementById('rolesGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 14; i++) {
+                const box = document.createElement('div');
+                box.className = 'role-box';
+                box.onclick = function() { this.classList.toggle('flipped'); };
+                
+                const front = document.createElement('div');
+                front.className = 'box-face box-front';
+                front.textContent = i + 1;
+                
+                const back = document.createElement('div');
+                back.className = 'box-face box-back';
+                
+                if (i === spyIndex) {
+                    back.classList.add('spy');
+                    back.textContent = 'You are the SPY!';
+                } else {
+                    back.textContent = `You are IN. The word is: ${selectedWord}`;
+                }
+                
+                box.appendChild(front);
+                box.appendChild(back);
+                grid.appendChild(box);
+            }
+        }
+
+        // Reset boxes
+        function resetBoxes() {
+            const boxes = document.querySelectorAll('.role-box');
+            boxes.forEach(box => box.classList.remove('flipped'));
+        }
+
+        // Initialize voting
+        function initializeVoting() {
+            const grid = document.getElementById('votingGrid');
+            grid.innerHTML = '';
+            votes = {};
+            
+            for (let i = 0; i < 14; i++) {
+                const player = document.createElement('div');
+                player.className = 'player-vote';
+                player.textContent = `Player ${i + 1}`;
+                player.onclick = function() {
+                    document.querySelectorAll('.player-vote').forEach(p => p.classList.remove('selected'));
+                    this.classList.add('selected');
+                    votes.selected = i;
+                };
+                grid.appendChild(player);
+            }
+            
+            document.getElementById('votingResults').style.display = 'none';
+        }
+
+        // Tally votes
+        function tallyVotes() {
+            const results = document.getElementById('votingResults');
+            if (votes.selected !== undefined) {
+                results.innerHTML = `<strong>Most Voted:</strong> Player ${votes.selected + 1}<br>Proceed to the next slide to reveal if they are the spy!`;
+                results.style.display = 'block';
+            } else {
+                results.innerHTML = '<strong>Please select a player to vote!</strong>';
+                results.style.display = 'block';
+            }
+        }
+
+        // Reveal spy
+        function revealSpy() {
+            const reveal = document.getElementById('spyReveal');
+            let message = '';
+            
+            if (votes.selected === spyIndex) {
+                message = `<strong>🎉 CORRECT! 🎉</strong><br><br>Player ${spyIndex + 1} was the SPY!<br>The word was: <strong>${selectedWord}</strong><br><br>The "IN" players WIN!`;
+            } else if (votes.selected !== undefined) {
+                message = `<strong>❌ WRONG! ❌</strong><br><br>Player ${votes.selected + 1} was NOT the spy!<br>The real spy was Player ${spyIndex + 1}!<br>The word was: <strong>${selectedWord}</strong><br><br>The SPY WINS!<br>(Spy, can you guess the word?)`;
+            } else {
+                message = `<strong>The SPY was Player ${spyIndex + 1}!</strong><br>The word was: <strong>${selectedWord}</strong>`;
+            }
+            
+            reveal.innerHTML = message;
+            reveal.style.display = 'block';
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            createParticles();
+            document.getElementById('prevBtn').disabled = true;
+        };
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+    </script>
+</body>
+</html>
