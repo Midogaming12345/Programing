@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocab Adventure in 3D Space</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Welcome Slide -->
+            <section>
+                <h1>Welcome to Our English Session</h1>
+                <h2>Embark on a Vocab Journey Through the Stars!</h2>
+                <button id="start-mission">Start Mission</button>
+            </section>
+
+            <!-- Slide 2: Riddle Slide -->
+            <section>
+                <h1>Cosmic Riddle Challenge</h1>
+                <p>"I am a word that means unreasonable or based on whims, often criticized in courts. What am I?"</p>
+                <p>Hint: "Think of a judge's unfair ruling!"</p>
+                <button id="reveal-answer">Reveal Answer</button>
+                <div id="answer" style="display: none;">Arbitrary</div>
+            </section>
+
+            <!-- Slide 3: Vocab Unit 5 Set A -->
+            <section>
+                <h1>Vocab Unit 5 Set A – Words from the Void</h1>
+                <div class="vocab-list">
+                    <div class="vocab-item">
+                        <h3>Arbitrary (Adj.)</h3>
+                        <p><strong>Syn:</strong> capricious, high-handed, autocratic</p>
+                        <p><strong>Ant:</strong> reasoned, rational, objective, equitable</p>
+                        <p><strong>Ex:</strong> A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.</p>
+                    </div>
+                    <!-- Add more vocab items similarly -->
+                    <div class="vocab-item">
+                        <h3>Catalyst (N.)</h3>
+                        <p><strong>Syn:</strong> stimulus, spur, instigator</p>
+                        <p><strong>Ex:</strong> Enzymes are catalysts that aid in the digestion of food.</p>
+                    </div>
+                    <!-- Continue for all words -->
+                </div>
+            </section>
+
+            <!-- Slide 4: Vocab Questions -->
+            <section>
+                <h1>Test Your Knowledge – Space Quiz</h1>
+                <div class="quiz">
+                    <p>What is a synonym for "arbitrary"? (A) Capricious, B) Rational, C) Equitable</p>
+                    <button class="answer-btn" data-answer="A">A</button>
+                    <button class="answer-btn" data-answer="B">B</button>
+                    <button class="answer-btn" data-answer="C">C</button>
+                    <div class="result" style="display: none;">Correct! Answer: A</div>
+                </div>
+                <!-- Add more questions -->
+            </section>
+
+            <!-- Slide 5: Who is the Spy? (Game Setup) -->
+            <section>
+                <h1>Who is the Spy? – Mission: Identify the Imposter</h1>
+                <p>One player is the Spy! They don't know the secret word. Others get a word from Vocab Unit 5. Ask questions to find the Spy. Round time: 4 minutes.</p>
+                <div class="boxes">
+                    <!-- 14 boxes, one is spy -->
+                    <div class="box" data-type="word">You are in the word is Arbitrary. Click to hide/reveal.</div>
+                    <!-- Repeat for 13, one spy -->
+                    <div class="box spy">You are the Spy! No word assigned.</div>
+                </div>
+                <button id="reset-game">Reset</button>
+                <div id="timer">04:00</div>
+            </section>
+
+            <!-- Slide 6: Questioning Phase -->
+            <section>
+                <h1>Interrogation Round</h1>
+                <p>Player 1 asks Player 14, Player 2 asks Player 5, and so on.</p>
+                <p>Ask yes/no questions about the word, e.g., 'Is it an adjective?'</p>
+            </section>
+
+            <!-- Slide 7: Voting Phase -->
+            <section>
+                <h1>Vote for the Spy!</h1>
+                <p>By turns, each player votes.</p>
+                <div class="voting">
+                    <!-- Simulate voting bars -->
+                    <div class="vote-bar" data-player="1">Player 1: 20%</div>
+                    <!-- Add more -->
+                </div>
+            </section>
+
+            <!-- Slide 8: Reveal the Spy -->
+            <section>
+                <h1>The Spy is Revealed!</h1>
+                <p>Based on votes, the person who was the Spy is Player 7!</p>
+                <p>Great job, space detectives!</p>
+            </section>
+
+            <!-- Slide 9: Goodbye Slide -->
+            <section>
+                <h1>Mission Accomplished</h1>
+                <p>Goodbye! Thanks for joining our English session in space. Keep exploring vocab!</p>
+                <button id="replay">Replay</button>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
