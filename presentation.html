@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Space-Themed English Presentation</title>
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
+    <!-- Google Fonts for handwritten style -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS for space theme -->
+    <style>
+        body {
+            font-family: 'Dancing Script', cursive;
+            background: #000;
+        }
+        .reveal {
+            background: radial-gradient(ellipse at center, #0f0f23 0%, #000 100%);
+        }
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                              radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.5), transparent),
+                              radial-gradient(1px 1px at 90px 40px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 100px 100px;
+            animation: twinkle 4s linear infinite;
+        }
+        @keyframes twinkle {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .planet {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #8b5cf6, #3b82f6);
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .slide-content {
+            color: #fff;
+            text-align: center;
+        }
+        .vocab-slide {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%233b82f6" opacity="0.3"/></svg>') no-repeat center;
+            background-size: 200px;
+        }
+        .game-boxes {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            background: #333;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+        }
+        .box:hover {
+            background: #555;
+        }
+        .timer {
+            font-size: 24px;
+            color: #f59e0b;
+        }
+        .vote-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .vote-btn {
+            margin: 5px;
+            padding: 10px;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .vote-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Welcome Slide -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 20%; left: 80%;"></div>
+                <h1>Welcome to Our English Session!</h1>
+            </section>
+
+            <!-- Slide 2: Riddle Slide -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 30%; left: 70%;"></div>
+                <h2>Riddle:</h2>
+                <p>I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?</p>
+                <p class="fragment">Answer: An echo!</p>
+            </section>
+
+            <!-- Slide 3: Vocab Unit 5 Set A Title -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 40%; left: 60%;"></div>
+                <h1>Vocab Unit 5 Set A</h1>
+            </section>
+
+            <!-- Slide 4: Arbitrary -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 50%; left: 50%;"></div>
+                <h2>Arbitrary</h2>
+                <p>(Adj.) unreasonable; based on one’s wishes or whims without regard for reason or fairness</p>
+                <p><strong>Synonyms:</strong> capricious, high-handed, autocratic</p>
+                <p><strong>Antonyms:</strong> reasoned, rational, objective, equitable</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.</li>
+                    <li>I don’t know why I chose that one; it was a completely arbitrary decision.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 5: Catalyst -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 60%; left: 40%;"></div>
+                <h2>Catalyst</h2>
+                <p>(N.) a substance that causes or hastens a chemical reaction; any agent that causes change</p>
+                <p><strong>Synonyms:</strong> stimulus, spur, instigator</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Enzymes are catalysts that aid in the digestion of food.</li>
+                    <li>The bombing attack was the catalyst for war.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 6: Facilitate -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 70%; left: 30%;"></div>
+                <h2>Facilitate</h2>
+                <p>(V.) to make easier, to assist</p>
+                <p><strong>Synonyms:</strong> ease, smooth the way, simplify</p>
+                <p><strong>Antonyms:</strong> hamper, hinder, obstruct, impede</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>The Federal Reserve Board may lower interest rates in order to facilitate economic growth.</li>
+                    <li>Her rise to power was facilitated by her influential friends.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 7: Incorrigible -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 80%; left: 20%;"></div>
+                <h2>Incorrigible</h2>
+                <p>(Adj.) not able to be corrected; beyond control</p>
+                <p><strong>Synonyms:</strong> unruly, intractable, incurable, inveterate</p>
+                <p><strong>Antonyms:</strong> tractable, docile, curable, reparable</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Criminals deemed incorrigible can expect to receive maximum sentences for their offenses against society.</li>
+                    <li>He is always the class clown, and his teachers say he is incorrigible.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 8: Militant -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 90%; left: 10%;"></div>
+                <h2>Militant</h2>
+                <p>(Adj.) given to fighting; active and aggressive in support of a cause; (n.) an activist</p>
+                <p><strong>Synonyms:</strong> (adj.) truculent</p>
+                <p><strong>Antonyms:</strong> (adj.) unassertive, peaceable, passive</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>In the struggle for civil rights, Martin Luther King, Jr., advocated peaceful rather than militant protest.</li>
+                    <li>Elizabeth Cady Stanton was a militant in the fight for woman suffrage.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 9: Paramount -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 10%; left: 90%;"></div>
+                <h2>Paramount</h2>
+                <p>(Adj.) chief in importance, above all others</p>
+                <p><strong>Synonyms:</strong> supreme, primary, dominant</p>
+                <p><strong>Antonyms:</strong> secondary, subordinate, ancillary</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>The safety of the passengers is paramount to the airline industry.</li>
+                    <li>The patient’s well-being was the doctor’s paramount concern during the surgery.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 10: Rebut -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 20%; left: 80%;"></div>
+                <h2>Rebut</h2>
+                <p>(V.) to offer arguments or evidence that contradict an assertion; to refute</p>
+                <p><strong>Synonyms:</strong> disprove, confute, shoot holes in</p>
+                <p><strong>Antonyms:</strong> confirm, corroborate, substantiate</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>He was able to rebut the accusations made against him with evidence of his innocence.</li>
+                    <li>Attempts to rebut the myths could be easily batted away as a case of no smoke without fire.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 11: Reprimand -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 30%; left: 70%;"></div>
+                <h2>Reprimand</h2>
+                <p>(V.) to scold; find fault with; (n.) a rebuke</p>
+                <p><strong>Synonyms:</strong> (v.) reproach; (n.) reproof</p>
+                <p><strong>Antonyms:</strong> (v.) pat on the back</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>You’ll get a five thousand pound fine and a severe reprimand for having police lights on your car in the UK.</li>
+                    <li>When I misbehaved in school, my teacher sent me home with a written reprimand for my parents to sign.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 12: Servitude -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 40%; left: 60%;"></div>
+                <h2>Servitude</h2>
+                <p>(N.) slavery, forced labor</p>
+                <p><strong>Synonyms:</strong> bondage, thralldom</p>
+                <p><strong>Antonyms:</strong> liberty</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>My daughter has to work in servitude until she can earn enough money to replace the big-screened television she broke.</li>
+                    <li>In the past, attempts to commit murder were punishable by penal servitude for life.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 13: Slapdash -->
+            <section class="slide-content vocab-slide">
+                <div class="stars"></div>
+                <div class="planet" style="top: 50%; left: 50%;"></div>
+                <h2>Slapdash</h2>
+                <p>(Adj.) careless and hasty</p>
+                <p><strong>Synonyms:</strong> cursory, perfunctory, slipshod</p>
+                <p><strong>Antonyms:</strong> painstaking, thorough, in-depth</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>We ran out of time and had to use a slapdash solution that failed to fix the problem.</li>
+                    <li>Her slapdash approach to studying resulted in a poor grade on the exam.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 14: Questions on the Words -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 60%; left: 40%;"></div>
+                <h2>Some Questions on the Words:</h2>
+                <ul>
+                    <li>What is a synonym for "arbitrary"? <span class="fragment">Capricious</span></li>
+                    <li>Give an example of "catalyst" in a sentence. <span class="fragment">Enzymes are catalysts that aid in digestion.</span></li>
+                    <li>What does "facilitate" mean? <span class="fragment">To make easier or assist.</span></li>
+                    <li>Antonym for "incorrigible"? <span class="fragment">Tractable</span></li>
+                    <li>Who was a "militant" in civil rights? <span class="fragment">Elizabeth Cady Stanton.</span></li>
+                    <li>What is paramount in the airline industry? <span class="fragment">Passenger safety.</span></li>
+                    <li>How do you rebut something? <span class="fragment">Offer contradicting evidence.</span></li>
+                    <li>What is a reprimand? <span class="fragment">A scolding or rebuke.</span></li>
+                    <li>Synonym for servitude? <span class="fragment">Bondage</span></li>
+                    <li>Antonym for slapdash? <span class="fragment">Painstaking</span></li>
+                </ul>
+            </section>
+
+            <!-- Slide 15: Who is the Spy? (Game Start) -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 70%; left: 30%;"></div>
+                <h1>Who is the Spy?</h1>
+                <p>Instructions: One player is the "spy" who doesn't know the secret word. The other 13 know it. Rounds last 4 minutes.</p>
+                <button id="reset-game">Reset</button>
+                <div class="game-boxes" id="game-boxes">
+                    <!-- Boxes will be generated by JS -->
+                </div>
+            </section>
+
+            <!-- Slide 16: Questioning Phase -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 80%; left: 20%;"></div>
+                <h2>Questioning Round (4 minutes):</h2>
+                <p>Players ask each other questions to guess the word. Sequence: Player 1 asks Player 14, Player 2 asks Player 5, etc.</p>
+                <div class="timer" id="timer">04:00</div>
+                <button id="start-timer">Start Timer</button>
+            </section>
+
+            <!-- Slide 17: Voting Phase -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 90%; left: 10%;"></div>
+                <h2>Voting:</h2>
+                <p>Each player votes by turns. Choose who you think is the spy.</p>
+                <div class="vote-buttons" id="vote-buttons">
+                    <!-- Buttons will be generated by JS -->
+                </div>
+            </section>
+
+            <!-- Slide 18: Reveal the Spy -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 10%; left: 90%;"></div>
+                <h2>The Spy Was: <span id="spy-reveal"></span>!</h2>
+            </section>
+
+            <!-- Slide 19: Goodbye Slide -->
+            <section class="slide-content">
+                <div class="stars"></div>
+                <div class="planet" style="top: 20%; left: 80%;"></div>
+                <h1>Goodbye! Thanks for joining our English session in space.</h1>
+            </section>
+        </div>
+    </div>
+
+    <!-- Reveal.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            backgroundTransition: 'slide'
+        });
+
+        // Game logic
+        const vocabWords = ['Arbitrary', 'Catalyst', 'Facilitate', 'Incorrigible', 'Militant', 'Paramount', 'Rebut', 'Reprimand', 'Servitude', 'Slapdash'];
+        let currentWord = '';
+        let spyIndex = -1;
+        let timerInterval;
+
+        function resetGame() {
+            currentWord = vocabWords[Math.floor(Math.random() * vocabWords.length)];
+            spyIndex = Math.floor(Math.random() * 14);
+            const boxes = document.getElementById('game-boxes');
+            boxes.innerHTML = '';
+            for (let i = 0; i < 14; i++) {
+                const box = document.createElement('div');
+                box.className = 'box';
+                box.textContent = i === spyIndex ? 'You are the spy!' : `You are in: The word is ${currentWord}.`;
+                box.onclick = () => alert(box.textContent);
+                boxes.appendChild(box);
+            }
+        }
+
+        function startTimer() {
+            let time = 240; // 4 minutes
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                time--;
+                if (time < 0) {
+                    clearInterval(timerInterval);
+                    alert('Time\'s up!');
+                }
+            }, 1000);
+        }
+
+        function setupVoting() {
+            const buttons = document.getElementById('vote-buttons');
+            buttons.innerHTML = '';
+            for (let i = 1; i <= 14; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'vote-btn';
+                btn.textContent = `Player ${i}`;
+                btn.onclick = () => {
+                    document.getElementById('spy-reveal').textContent = `Player ${i}`;
+                    Reveal.next();
+                };
+                buttons.appendChild(btn);
+            }
+        }
+
+        document.getElementById('reset-game').onclick = resetGame;
+        document.getElementById('start-timer').onclick = startTimer;
+        setupVoting();
+        resetGame();
+    </script>
+
+    <!-- Sound effects -->
+    <audio id="whoosh" src="https://www.soundjay.com/misc/sounds/whoosh-01.wav" preload="auto"></audio>
+    <script>
+        Reveal.on('slidechanged', function(event) {
+            document.getElementById('whoosh').play();
+        });
+    </script>
+</body>
+</html>
