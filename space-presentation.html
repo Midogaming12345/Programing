@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Space English Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Patrick Hand', cursive;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .presentation-container {
+            position: relative;
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            padding: 60px;
+            background: rgba(10, 10, 30, 0.85);
+            border-radius: 20px;
+            border: 3px solid rgba(100, 150, 255, 0.5);
+            box-shadow: 0 0 50px rgba(100, 150, 255, 0.3);
+            animation: slideIn 0.8s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+        }
+
+        h2 {
+            font-family: 'Caveat', cursive;
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #ff6ec7;
+            text-shadow: 0 0 15px rgba(255, 110, 199, 0.6);
+        }
+
+        .word-title {
+            font-size: 3.5em;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        p, li {
+            font-size: 1.5em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .definition {
+            color: #a8e6cf;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .synonyms, .antonyms, .examples {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            color: #ff9f43;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            font-family: 'Patrick Hand', cursive;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: rgba(0, 212, 255, 0.3);
+            border: 2px solid #00d4ff;
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        button:hover {
+            background: rgba(0, 212, 255, 0.6);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .riddle-answer {
+            display: none;
+            color: #ffd700;
+            font-size: 2em;
+            margin-top: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .show-answer-btn {
+            margin-top: 20px;
+            background: rgba(255, 110, 199, 0.3);
+            border-color: #ff6ec7;
+        }
+
+        .questions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .questions-list li {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .answer {
+            display: none;
+            color: #a8e6cf;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .game-container {
+            text-align: center;
+        }
+
+        .player-boxes {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .player-box {
+            padding: 20px;
+            background: rgba(100, 150, 255, 0.2);
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .player-box:hover {
+            background: rgba(100, 150, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .player-box.revealed {
+            background: rgba(255, 110, 199, 0.3);
+        }
+
+        .player-box.spy {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: #ff0000;
+        }
+
+        .hidden-content {
+            display: none;
+            font-size: 1.2em;
+        }
+
+        .player-box.revealed .hidden-content {
+            display: block;
+        }
+
+        .timer {
+            font-size: 3em;
+            color: #ffd700;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .voting-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .vote-btn {
+            padding: 15px;
+            font-size: 1em;
+        }
+
+        .game-phase {
+            font-size: 2em;
+            color: #ff6ec7;
+            margin-bottom: 20px;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            font-size: 1.5em;
+            color: #00d4ff;
+            background: rgba(10, 10, 30, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #00d4ff;
+        }
+
+        .scary-theme {
+            background: rgba(50, 0, 0, 0.85) !important;
+            border-color: rgba(255, 0, 0, 0.5) !important;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ff6ec7;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">19</span>
+    </div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Welcome -->
+        <div class="slide active" data-slide="1">
+            <h1>🚀 Welcome to Our English Session! 🌟</h1>
+            <p style="text-align: center; font-size: 2em; margin-top: 50px;">
+                Prepare for an adventure through space and vocabulary!
+            </p>
+        </div>
+
+        <!-- Slide 2: Riddle -->
+        <div class="slide" data-slide="2">
+            <h1>🌌 Riddle Time! 🤔</h1>
+            <p style="font-size: 2em; text-align: center; margin: 50px 0;">
+                I speak without a mouth and hear without ears.<br>
+                I have no body, but I come alive with the wind.<br>
+                What am I?
+            </p>
+            <div style="text-align: center;">
+                <button class="show-answer-btn" onclick="showRiddleAnswer()">Show Answer</button>
+            </div>
+            <div class="riddle-answer" id="riddle-answer">
+                ✨ An Echo! ✨
+            </div>
+        </div>
+
+        <!-- Slide 3: Vocab Title -->
+        <div class="slide" data-slide="3">
+            <h1>📚 Vocab Unit 5 Set A 📚</h1>
+            <p style="text-align: center; font-size: 2em; margin-top: 50px;">
+                Let's explore 10 powerful words!
+            </p>
+        </div>
+
+        <!-- Slide 4: Arbitrary -->
+        <div class="slide" data-slide="4">
+            <h2 class="word-title">Arbitrary</h2>
+            <p class="definition">(Adj.) unreasonable; based on one's wishes or whims without regard for reason or fairness</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> capricious, high-handed, autocratic
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> reasoned, rational, objective, equitable
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.</li>
+                    <li>I don't know why I chose that one; it was a completely arbitrary decision.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5: Catalyst -->
+        <div class="slide" data-slide="5">
+            <h2 class="word-title">Catalyst</h2>
+            <p class="definition">(N.) a substance that causes or hastens a chemical reaction; any agent that causes change</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> stimulus, spur, instigator
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>Enzymes are catalysts that aid in the digestion of food.</li>
+                    <li>The bombing attack was the catalyst for war.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Facilitate -->
+        <div class="slide" data-slide="6">
+            <h2 class="word-title">Facilitate</h2>
+            <p class="definition">(V.) to make easier, to assist</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> ease, smooth the way, simplify
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> hamper, hinder, obstruct, impede
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>The Federal Reserve Board may lower interest rates in order to facilitate economic growth.</li>
+                    <li>Her rise to power was facilitated by her influential friends.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Incorrigible -->
+        <div class="slide" data-slide="7">
+            <h2 class="word-title">Incorrigible</h2>
+            <p class="definition">(Adj.) not able to be corrected; beyond control</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> unruly, intractable, incurable, inveterate
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> tractable, docile, curable, reparable
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>Criminals deemed incorrigible can expect to receive maximum sentences for their offenses against society.</li>
+                    <li>He is always the class clown, and his teachers say he is incorrigible.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 8: Militant -->
+        <div class="slide" data-slide="8">
+            <h2 class="word-title">Militant</h2>
+            <p class="definition">(Adj.) given to fighting; active and aggressive in support of a cause; (n.) an activist</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> (adj.) truculent
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> (adj.) unassertive, peaceable, passive
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>In the struggle for civil rights, Martin Luther King, Jr., advocated peaceful rather than militant protest.</li>
+                    <li>Elizabeth Cady Stanton was a militant in the fight for woman suffrage.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 9: Paramount -->
+        <div class="slide" data-slide="9">
+            <h2 class="word-title">Paramount</h2>
+            <p class="definition">(Adj.) chief in importance, above all others</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> supreme, primary, dominant
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> secondary, subordinate, ancillary
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>The safety of the passengers is paramount to the airline industry.</li>
+                    <li>The patient's well-being was the doctor's paramount concern during the surgery.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10: Rebut -->
+        <div class="slide" data-slide="10">
+            <h2 class="word-title">Rebut</h2>
+            <p class="definition">(V.) to offer arguments or evidence that contradict an assertion; to refute</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> disprove, confute, shoot holes in
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> confirm, corroborate, substantiate
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>He was able to rebut the accusations made against him with evidence of his innocence.</li>
+                    <li>Attempts to rebut the myths could be easily batted away as a case of no smoke without fire.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Reprimand -->
+        <div class="slide" data-slide="11">
+            <h2 class="word-title">Reprimand</h2>
+            <p class="definition">(V.) to scold; find fault with; (n.) a rebuke</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> (v.) reproach; (n.) reproof
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> (v.) pat on the back
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>You'll get a five thousand pound fine and a severe reprimand for having police lights on your car in the UK.</li>
+                    <li>When I misbehaved in school, my teacher sent me home with a written reprimand for my parents to sign.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 12: Servitude -->
+        <div class="slide" data-slide="12">
+            <h2 class="word-title">Servitude</h2>
+            <p class="definition">(N.) slavery, forced labor</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> bondage, thralldom
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> liberty
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>My daughter has to work in servitude until she can earn enough money to replace the big-screened television she broke.</li>
+                    <li>In the past, attempts to commit murder were punishable by penal servitude for life.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 13: Slapdash -->
+        <div class="slide" data-slide="13">
+            <h2 class="word-title">Slapdash</h2>
+            <p class="definition">(Adj.) careless and hasty</p>
+            <div class="synonyms">
+                <span class="label">Synonyms:</span> cursory, perfunctory, slipshod
+            </div>
+            <div class="antonyms">
+                <span class="label">Antonyms:</span> painstaking, thorough, in-depth
+            </div>
+            <div class="examples">
+                <span class="label">Examples:</span>
+                <ul>
+                    <li>We ran out of time and had to use a slapdash solution that failed to fix the problem.</li>
+                    <li>Her slapdash approach to studying resulted in a poor grade on the exam.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 14: Questions -->
+        <div class="slide" data-slide="14">
+            <h1>❓ Questions on the Words ❓</h1>
+            <ul class="questions-list">
+                <li onclick="toggleAnswer(1)">
+                    <strong>1. What is a synonym for "arbitrary"?</strong>
+                    <div class="answer" id="answer-1">Answer: Capricious</div>
+                </li>
+                <li onclick="toggleAnswer(2)">
+                    <strong>2. Give an example of "catalyst" in a sentence.</strong>
+                    <div class="answer" id="answer-2">Answer: Enzymes are catalysts that aid in digestion.</div>
+                </li>
+                <li onclick="toggleAnswer(3)">
+                    <strong>3. What does "facilitate" mean?</strong>
+                    <div class="answer" id="answer-3">Answer: To make easier or assist.</div>
+                </li>
+                <li onclick="toggleAnswer(4)">
+                    <strong>4. Antonym for "incorrigible"?</strong>
+                    <div class="answer" id="answer-4">Answer: Tractable</div>
+                </li>
+                <li onclick="toggleAnswer(5)">
+                    <strong>5. Who was a "militant" in the fight for woman suffrage?</strong>
+                    <div class="answer" id="answer-5">Answer: Elizabeth Cady Stanton</div>
+                </li>
+                <li onclick="toggleAnswer(6)">
+                    <strong>6. What is paramount in the airline industry?</strong>
+                    <div class="answer" id="answer-6">Answer: Passenger safety</div>
+                </li>
+                <li onclick="toggleAnswer(7)">
+                    <strong>7. How do you rebut something?</strong>
+                    <div class="answer" id="answer-7">Answer: Offer contradicting evidence</div>
+                </li>
+                <li onclick="toggleAnswer(8)">
+                    <strong>8. What is a reprimand?</strong>
+                    <div class="answer" id="answer-8">Answer: A scolding or rebuke</div>
+                </li>
+                <li onclick="toggleAnswer(9)">
+                    <strong>9. Synonym for servitude?</strong>
+                    <div class="answer" id="answer-9">Answer: Bondage</div>
+                </li>
+                <li onclick="toggleAnswer(10)">
+                    <strong>10. Antonym for slapdash?</strong>
+                    <div class="answer" id="answer-10">Answer: Painstaking</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Slide 15: Game Start -->
+        <div class="slide scary-theme" data-slide="15">
+            <div class="game-container">
+                <h1 style="color: #ff0000;">🕵️ Who is the Spy? 🕵️</h1>
+                <div class="instructions">
+                    <p><strong>Instructions:</strong></p>
+                    <p>• One player is the "spy" who doesn't know the secret word</p>
+                    <p>• The other 13 players know the secret word</p>
+                    <p>• Each round lasts 4 minutes</p>
+                    <p>• Click on a box to reveal your role</p>
+                    <p>• Click "Reset Game" to start a new round with a new word</p>
+                </div>
+                <button onclick="resetGame()" style="background: rgba(255, 0, 0, 0.3); border-color: #ff0000; margin: 20px 0;">
+                    🔄 Reset Game (New Word)
+                </button>
+                <div class="player-boxes" id="player-boxes">
+                    <!-- Player boxes will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Questioning Phase -->
+        <div class="slide scary-theme" data-slide="16">
+            <div class="game-container">
+                <h1 style="color: #ff0000;">🔍 Questioning Round 🔍</h1>
+                <div class="timer" id="timer">4:00</div>
+                <div class="instructions">
+                    <p><strong>Questioning Sequence (4 minutes):</strong></p>
+                    <p>Players ask each other questions to figure out the word without revealing it directly.</p>
+                    <p style="margin-top: 20px;"><strong>Question Order:</strong></p>
+                    <p>Player 1 → Player 14, Player 2 → Player 5, Player 3 → Player 6,<br>
+                    Player 4 → Player 7, Player 5 → Player 8, Player 6 → Player 9,<br>
+                    Player 7 → Player 10, Player 8 → Player 11, Player 9 → Player 12,<br>
+                    Player 10 → Player 13, Player 11 → Player 1, Player 12 → Player 2,<br>
+                    Player 13 → Player 3, Player 14 → Player 4</p>
+                </div>
+                <button onclick="startTimer()" style="margin: 20px;">⏱️ Start Timer</button>
+                <button onclick="stopTimer()" style="margin: 20px;">⏸️ Stop Timer</button>
+                <button onclick="resetTimer()" style="margin: 20px;">🔄 Reset Timer</button>
+            </div>
+        </div>
+
+        <!-- Slide 17: Voting Phase -->
+        <div class="slide scary-theme" data-slide="17">
+            <div class="game-container">
+                <h1 style="color: #ff0000;">🗳️ Voting Phase 🗳️</h1>
+                <div class="instructions">
+                    <p><strong>Each player votes for who they think is the spy:</strong></p>
+                    <p>Click on the player number you suspect!</p>
+                </div>
+                <div class="voting-container" id="voting-container">
+                    <!-- Voting buttons will be generated by JavaScript -->
+                </div>
+                <div style="margin-top: 30px;">
+                    <h2 style="color: #ffd700;">Vote Results:</h2>
+                    <div id="vote-results" style="font-size: 1.5em; margin-top: 20px;"></div>
+                </div>
+                <button onclick="resetVotes()" style="margin-top: 20px;">🔄 Reset Votes</button>
+            </div>
+        </div>
+
+        <!-- Slide 18: Reveal -->
+        <div class="slide scary-theme" data-slide="18">
+            <div class="game-container">
+                <h1 style="color: #ffd700;">🎭 The Spy Revealed! 🎭</h1>
+                <div style="margin: 50px 0;">
+                    <p style="font-size: 3em; color: #ff0000;" id="spy-reveal">
+                        Click "Reveal Spy" to see who it was!
+                    </p>
+                </div>
+                <button onclick="revealSpy()" style="font-size: 1.5em; padding: 20px 40px; background: rgba(255, 215, 0, 0.3); border-color: #ffd700;">
+                    🔓 Reveal Spy
+                </button>
+                <div id="spy-info" style="margin-top: 30px; font-size: 1.5em;"></div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Goodbye -->
+        <div class="slide" data-slide="19">
+            <h1>🚀 Goodbye! 🌟</h1>
+            <p style="text-align: center; font-size: 2em; margin-top: 50px;">
+                Thanks for joining our English session in space!<br>
+                Keep exploring and learning! 🌌✨
+            </p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button id="prev-btn" onclick="previousSlide()">⬅️ Previous</button>
+        <button id="next-btn" onclick="nextSlide()">Next ➡️</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js 3D Space Background
+        let scene, camera, renderer, stars = [], planets = [];
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Create stars
+            const starGeometry = new THREE.BufferGeometry();
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starVertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
+            const starField = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starField);
+            stars.push(starField);
+
+            // Create planets
+            const planetColors = [0x4169e1, 0xff6347, 0xffd700, 0x9370db, 0x00ced1];
+            for (let i = 0; i < 5; i++) {
+                const geometry = new THREE.SphereGeometry(Math.random() * 15 + 5, 32, 32);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: planetColors[i],
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const planet = new THREE.Mesh(geometry, material);
+                planet.position.set(
+                    (Math.random() - 0.5) * 500,
+                    (Math.random() - 0.5) * 500,
+                    (Math.random() - 0.5) * 500
+                );
+                scene.add(planet);
+                planets.push(planet);
+            }
+
+            camera.position.z = 50;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate stars
+            stars.forEach(star => {
+                star.rotation.y += 0.0002;
+            });
+
+            // Rotate planets
+            planets.forEach((planet, index) => {
+                planet.rotation.y += 0.001 * (index + 1);
+                planet.rotation.x += 0.0005 * (index + 1);
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Presentation Navigation
+        let currentSlide = 1;
+        const totalSlides = 19;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            const targetSlide = document.querySelector(`[data-slide="${currentSlide}"]`);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+            
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Riddle answer
+        function showRiddleAnswer() {
+            document.getElementById('riddle-answer').style.display = 'block';
+        }
+
+        // Questions toggle
+        function toggleAnswer(num) {
+            const answer = document.getElementById(`answer-${num}`);
+            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Game Logic
+        const vocabWords = ['Arbitrary', 'Catalyst', 'Facilitate', 'Incorrigible', 'Militant', 
+                           'Paramount', 'Rebut', 'Reprimand', 'Servitude', 'Slapdash'];
+        let currentWord = '';
+        let spyPlayer = 0;
+        let votes = {};
+
+        function resetGame() {
+            currentWord = vocabWords[Math.floor(Math.random() * vocabWords.length)];
+            spyPlayer = Math.floor(Math.random() * 14) + 1;
+            votes = {};
+            
+            const container = document.getElementById('player-boxes');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 14; i++) {
+                const box = document.createElement('div');
+                box.className = 'player-box';
+                box.innerHTML = `
+                    <strong>Player ${i}</strong>
+                    <div class="hidden-content">
+                        ${i === spyPlayer ? 
+                            '<p style="color: #ff0000;">🕵️ You are the SPY!</p><p>Find out the secret word!</p>' : 
+                            `<p style="color: #00ff00;">✅ You are IN!</p><p>The word is:<br><strong style="font-size: 1.3em;">${currentWord}</strong></p>`
+                        }
+                    </div>
+                `;
+                box.onclick = () => {
+                    box.classList.toggle('revealed');
+                    if (i === spyPlayer) box.classList.add('spy');
+                };
+                container.appendChild(box);
+            }
+            
+            // Reset voting
+            const votingContainer = document.getElementById('voting-container');
+            votingContainer.innerHTML = '';
+            for (let i = 1; i <= 14; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'vote-btn';
+                btn.textContent = `Player ${i}`;
+                btn.onclick = () => voteForPlayer(i);
+                votingContainer.appendChild(btn);
+            }
+            
+            resetVotes();
+            document.getElementById('spy-reveal').textContent = 'Click "Reveal Spy" to see who it was!';
+            document.getElementById('spy-info').innerHTML = '';
+        }
+
+        function voteForPlayer(player) {
+            votes[player] = (votes[player] || 0) + 1;
+            updateVoteResults();
+        }
+
+        function updateVoteResults() {
+            const resultsDiv = document.getElementById('vote-results');
+            let html = '';
+            for (let player in votes) {
+                html += `<p>Player ${player}: ${votes[player]} vote(s)</p>`;
+            }
+            resultsDiv.innerHTML = html || '<p>No votes yet</p>';
+        }
+
+        function resetVotes() {
+            votes = {};
+            updateVoteResults();
+        }
+
+        function revealSpy() {
+            document.getElementById('spy-reveal').innerHTML = 
+                `The SPY was <span style="color: #ff0000; font-size: 1.2em;">Player ${spyPlayer}</span>!`;
+            document.getElementById('spy-info').innerHTML = 
+                `<p>The secret word was: <strong style="color: #ffd700; font-size: 1.3em;">${currentWord}</strong></p>`;
+            
+            // Show most voted player
+            let maxVotes = 0;
+            let mostVoted = 0;
+            for (let player in votes) {
+                if (votes[player] > maxVotes) {
+                    maxVotes = votes[player];
+                    mostVoted = player;
+                }
+            }
+            
+            if (mostVoted > 0) {
+                const correct = parseInt(mostVoted) === spyPlayer;
+                document.getElementById('spy-info').innerHTML += 
+                    `<p style="margin-top: 20px;">Most voted: Player ${mostVoted} (${maxVotes} votes)</p>
+                    <p style="font-size: 2em; color: ${correct ? '#00ff00' : '#ff0000'};">
+                        ${correct ? '✅ Correct! The group found the spy!' : '❌ Wrong! The spy escaped!'}
+                    </p>`;
+            }
+        }
+
+        // Timer functionality
+        let timerInterval;
+        let timeLeft = 240; // 4 minutes in seconds
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Move to voting phase.');
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 240;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize
+        window.onload = () => {
+            initThreeJS();
+            showSlide(1);
+            resetGame();
+            updateTimerDisplay();
+        };
+    </script>
+</body>
+</html>
