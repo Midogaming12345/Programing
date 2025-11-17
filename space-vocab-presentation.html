@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Space Vocabulary Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #stars-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1;
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateZ(-500px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateZ(0);
+            }
+        }
+
+        .slide-title {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.8), 0 0 40px rgba(0, 200, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(0, 200, 255, 0.8), 0 0 40px rgba(0, 200, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(0, 200, 255, 1), 0 0 60px rgba(0, 200, 255, 0.8);
+            }
+        }
+
+        .slide-content {
+            max-width: 900px;
+            background: rgba(10, 10, 40, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(0, 200, 255, 0.5);
+            box-shadow: 0 0 40px rgba(0, 200, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .vocab-orb {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 200, 255, 0.8), rgba(100, 0, 255, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 0 60px rgba(0, 200, 255, 0.8);
+            animation: orbPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 60px rgba(0, 200, 255, 0.8);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 80px rgba(0, 200, 255, 1);
+            }
+        }
+
+        .definition {
+            font-size: 1.4em;
+            margin: 20px 0;
+            color: #00d4ff;
+        }
+
+        .synonyms, .antonyms, .examples {
+            margin: 15px 0;
+            font-size: 1.1em;
+            text-align: left;
+        }
+
+        .synonyms strong, .antonyms strong, .examples strong {
+            color: #00ff88;
+        }
+
+        .riddle-text {
+            font-size: 1.8em;
+            margin: 30px 0;
+            color: #ffaa00;
+            font-style: italic;
+        }
+
+        .hint {
+            font-size: 1.2em;
+            color: #00ff88;
+            margin-top: 20px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.8), rgba(100, 0, 255, 0.8));
+            border: 2px solid rgba(0, 200, 255, 0.8);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 200, 255, 0.8);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            font-size: 1.2em;
+            color: #00d4ff;
+            background: rgba(10, 10, 40, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 200, 255, 0.5);
+        }
+
+        .quiz-question {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 200, 255, 0.3);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: rgba(0, 100, 200, 0.3);
+            border: 2px solid rgba(0, 200, 255, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            background: rgba(0, 150, 255, 0.5);
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: rgba(0, 255, 100, 0.5);
+            border-color: #00ff88;
+        }
+
+        .quiz-option.wrong {
+            background: rgba(255, 0, 0, 0.5);
+            border-color: #ff0000;
+        }
+
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(0, 100, 200, 0.6), rgba(100, 0, 200, 0.6));
+            border: 2px solid rgba(0, 200, 255, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.8);
+        }
+
+        .memory-card.flipped {
+            background: rgba(0, 200, 255, 0.3);
+        }
+
+        .memory-card.matched {
+            background: rgba(0, 255, 100, 0.5);
+            border-color: #00ff88;
+            animation: matchPulse 0.5s;
+        }
+
+        .memory-card.wrong {
+            background: rgba(255, 0, 0, 0.5);
+            border-color: #ff0000;
+            animation: shake 0.5s;
+        }
+
+        @keyframes matchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .game-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5em;
+            color: #ffaa00;
+            margin: 20px 0;
+        }
+
+        .goodbye-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .quiz-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .quiz-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .quiz-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 200, 255, 0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="stars-canvas"></canvas>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">16</span>
+    </div>
+
+    <!-- Slide 1: Welcome -->
+    <div class="slide active" data-slide="1">
+        <h1 class="slide-title">Welcome to Our English Session</h1>
+        <div class="slide-content">
+            <div class="welcome-subtitle">Embark on a Journey Through Vocabulary!</div>
+            <p style="font-size: 1.3em; margin-top: 20px;">Get ready to explore words in the cosmos of language.</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Riddle -->
+    <div class="slide" data-slide="2">
+        <h1 class="slide-title">Solve the Riddle to Unlock the Vocab!</h1>
+        <div class="slide-content">
+            <div class="riddle-text">
+                "I can make things change without lifting a finger, speed up reactions or spark a war. 
+                I'm not alive, but I cause action—what am I?"
+            </div>
+            <div class="hint">💡 Hint: Think of chemistry or history!</div>
+            <div style="margin-top: 30px; font-size: 1.5em; color: #00ff88;">
+                Answer: <span style="color: #ffaa00;">Catalyst</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Arbitrary -->
+    <div class="slide" data-slide="3">
+        <h1 class="slide-title">Arbitrary</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Arbitrary</div>
+            <div class="definition"><strong>Definition:</strong> (Adj.) Unreasonable; based on one's wishes or whims without regard for reason or fairness.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Capricious, high-handed, autocratic</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Reasoned, rational, objective, equitable</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.<br>
+                • I don't know why I chose that one; it was a completely arbitrary decision.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Catalyst -->
+    <div class="slide" data-slide="4">
+        <h1 class="slide-title">Catalyst</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Catalyst</div>
+            <div class="definition"><strong>Definition:</strong> (N.) A substance that causes or hastens a chemical reaction; any agent that causes change.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Stimulus, spur, instigator</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Inhibitor</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • Enzymes are catalysts that aid in the digestion of food.<br>
+                • The bombing attack was the catalyst for war.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Facilitate -->
+    <div class="slide" data-slide="5">
+        <h1 class="slide-title">Facilitate</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Facilitate</div>
+            <div class="definition"><strong>Definition:</strong> (V.) To make easier, to assist.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Ease, smooth the way, simplify</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Hamper, hinder, obstruct, impede</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • The Federal Reserve Board may lower interest rates in order to facilitate economic growth.<br>
+                • Her rise to power was facilitated by her influential friends.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Incorrigible -->
+    <div class="slide" data-slide="6">
+        <h1 class="slide-title">Incorrigible</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Incorrigible</div>
+            <div class="definition"><strong>Definition:</strong> (Adj.) Not able to be corrected; beyond control.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Unruly, intractable, incurable, inveterate</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Tractable, docile, curable, reparable</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • Criminals deemed incorrigible can expect to receive maximum sentences for their offenses against society.<br>
+                • He is always the class clown, and his teachers say he is incorrigible.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Militant -->
+    <div class="slide" data-slide="7">
+        <h1 class="slide-title">Militant</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Militant</div>
+            <div class="definition"><strong>Definition:</strong> (Adj.) Given to fighting; active and aggressive in support of a cause; (n.) an activist.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> (Adj.) Truculent</div>
+            <div class="antonyms"><strong>Antonyms:</strong> (Adj.) Unassertive, peaceable, passive</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • In the struggle for civil rights, Martin Luther King, Jr., advocated peaceful rather than militant protest.<br>
+                • Elizabeth Cady Stanton was a militant in the fight for woman suffrage.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Paramount -->
+    <div class="slide" data-slide="8">
+        <h1 class="slide-title">Paramount</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Paramount</div>
+            <div class="definition"><strong>Definition:</strong> (Adj.) Chief in importance, above all others.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Supreme, primary, dominant</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Secondary, subordinate, ancillary</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • The safety of the passengers is paramount to the airline industry.<br>
+                • The patient's well-being was the doctor's paramount concern during the surgery.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Rebut -->
+    <div class="slide" data-slide="9">
+        <h1 class="slide-title">Rebut</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Rebut</div>
+            <div class="definition"><strong>Definition:</strong> (V.) To offer arguments or evidence that contradict an assertion; to refute.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Disprove, confute, shoot holes in</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Confirm, corroborate, substantiate</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • He was able to rebut the accusations made against him with evidence of his innocence.<br>
+                • Attempts to rebut the myths could be easily batted away as a case of no smoke without fire.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Reprimand -->
+    <div class="slide" data-slide="10">
+        <h1 class="slide-title">Reprimand</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Reprimand</div>
+            <div class="definition"><strong>Definition:</strong> (V.) To scold; find fault with; (n.) a rebuke.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> (V.) Reproach; (n.) Reproof</div>
+            <div class="antonyms"><strong>Antonyms:</strong> (V.) Pat on the back</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • You'll get a five thousand pound fine and a severe reprimand for having police lights on your car in the UK.<br>
+                • When I misbehaved in school, my teacher sent me home with a written reprimand for my parents to sign.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Servitude -->
+    <div class="slide" data-slide="11">
+        <h1 class="slide-title">Servitude</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Servitude</div>
+            <div class="definition"><strong>Definition:</strong> (N.) Slavery, forced labor.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Bondage, thralldom</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Liberty</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • My daughter has to work in servitude until she can earn enough money to replace the big-screened television she broke.<br>
+                • In the past, attempts to commit murder were punishable by penal servitude for life.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Slapdash -->
+    <div class="slide" data-slide="12">
+        <h1 class="slide-title">Slapdash</h1>
+        <div class="slide-content">
+            <div class="vocab-orb">Slapdash</div>
+            <div class="definition"><strong>Definition:</strong> (Adj.) Careless and hasty.</div>
+            <div class="synonyms"><strong>Synonyms:</strong> Cursory, perfunctory, slipshod</div>
+            <div class="antonyms"><strong>Antonyms:</strong> Painstaking, thorough, in-depth</div>
+            <div class="examples">
+                <strong>Examples:</strong><br>
+                • We ran out of time and had to use a slapdash solution that failed to fix the problem.<br>
+                • Her slapdash approach to studying resulted in a poor grade on the exam.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13: Quiz -->
+    <div class="slide" data-slide="13">
+        <h1 class="slide-title">Test Your Knowledge: Vocab Quiz in Space!</h1>
+        <div class="slide-content quiz-container" id="quiz-container">
+            <!-- Quiz questions will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Slide 14: Memory Game - Synonyms -->
+    <div class="slide" data-slide="14">
+        <h1 class="slide-title">Memory Match: Words & Synonyms</h1>
+        <div class="game-title">Match each word with its synonym!</div>
+        <div class="memory-game" id="synonym-game">
+            <!-- Memory cards will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Slide 15: Memory Game - Antonyms -->
+    <div class="slide" data-slide="15">
+        <h1 class="slide-title">Memory Match: Words & Antonyms</h1>
+        <div class="game-title">Match each word with its antonym!</div>
+        <div class="memory-game" id="antonym-game">
+            <!-- Memory cards will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Slide 16: Goodbye -->
+    <div class="slide" data-slide="16">
+        <h1 class="slide-title">Goodbye! 🌟</h1>
+        <div class="slide-content">
+            <div class="goodbye-emoji">🌌✨</div>
+            <div style="font-size: 1.8em; margin: 20px 0;">Thanks for joining our English session in space!</div>
+            <div style="font-size: 1.4em; color: #00ff88;">Keep exploring and learning!</div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn">← Previous</button>
+        <button class="nav-btn" id="next-btn">Next →</button>
+    </div>
+
+    <script>
+        // Stars animation
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        const numStars = 200;
+
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2,
+                speed: Math.random() * 0.5 + 0.1,
+                opacity: Math.random()
+            });
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+                
+                star.y += star.speed;
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+                
+                star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
+            });
+            
+            requestAnimationFrame(animateStars);
+        }
+
+        animateStars();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Slide navigation
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            else currentSlide = n;
+            
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+            
+            // Initialize quiz or games when entering those slides
+            if (currentSlide === 13) initQuiz();
+            if (currentSlide === 14) initSynonymGame();
+            if (currentSlide === 15) initAntonymGame();
+        }
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+            if (e.key === 'ArrowRight') showSlide(currentSlide + 1);
+        });
+
+        // Quiz functionality
+        const quizQuestions = [
+            {
+                question: "What is a synonym for 'arbitrary'?",
+                options: ["Rational", "Capricious", "Equitable"],
+                answer: 1
+            },
+            {
+                question: "In the sentence 'Enzymes are catalysts that aid in digestion,' what does 'catalyst' mean?",
+                options: ["A blocker", "An agent of change", "A synonym for food"],
+                answer: 1
+            },
+            {
+                question: "Antonym of 'facilitate':",
+                options: ["Ease", "Hamper", "Simplify"],
+                answer: 1
+            },
+            {
+                question: "What does 'incorrigible' describe?",
+                options: ["Easily corrected", "Beyond control", "Peaceful"],
+                answer: 1
+            },
+            {
+                question: "Example of 'militant':",
+                options: ["A passive protester", "An aggressive activist", "A quiet leader"],
+                answer: 1
+            },
+            {
+                question: "'Paramount' means:",
+                options: ["Secondary", "Chief in importance", "Subordinate"],
+                answer: 1
+            },
+            {
+                question: "To 'rebut' is to:",
+                options: ["Confirm", "Contradict", "Ignore"],
+                answer: 1
+            },
+            {
+                question: "A 'reprimand' is:",
+                options: ["A reward", "A scolding", "A compliment"],
+                answer: 1
+            },
+            {
+                question: "'Servitude' is similar to:",
+                options: ["Liberty", "Bondage", "Freedom"],
+                answer: 1
+            },
+            {
+                question: "Opposite of 'slapdash':",
+                options: ["Hasty", "Painstaking", "Careless"],
+                answer: 1
+            }
+        ];
+
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            if (container.children.length > 0) return; // Already initialized
+            
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <div style="font-size: 1.3em; margin-bottom: 15px; color: #00d4ff;">
+                        ${index + 1}. ${q.question}
+                    </div>
+                    <div class="quiz-options" data-question="${index}">
+                        ${q.options.map((opt, i) => `
+                            <div class="quiz-option" data-answer="${i}">
+                                ${String.fromCharCode(65 + i)}) ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            // Add click handlers
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionIndex = parseInt(this.parentElement.dataset.question);
+                    const answerIndex = parseInt(this.dataset.answer);
+                    const correctAnswer = quizQuestions[questionIndex].answer;
+                    
+                    // Disable all options for this question
+                    const allOptions = this.parentElement.querySelectorAll('.quiz-option');
+                    allOptions.forEach(opt => {
+                        opt.style.pointerEvents = 'none';
+                        if (parseInt(opt.dataset.answer) === correctAnswer) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                    
+                    if (answerIndex === correctAnswer) {
+                        this.classList.add('correct');
+                    } else {
+                        this.classList.add('wrong');
+                    }
+                });
+            });
+        }
+
+        // Memory game data
+        const synonymPairs = [
+            { word: "Arbitrary", match: "Capricious" },
+            { word: "Catalyst", match: "Stimulus" },
+            { word: "Facilitate", match: "Ease" },
+            { word: "Incorrigible", match: "Unruly" },
+            { word: "Militant", match: "Truculent" },
+            { word: "Paramount", match: "Supreme" },
+            { word: "Rebut", match: "Disprove" },
+            { word: "Reprimand", match: "Reproach" },
+            { word: "Servitude", match: "Bondage" },
+            { word: "Slapdash", match: "Cursory" }
+        ];
+
+        const antonymPairs = [
+            { word: "Arbitrary", match: "Rational" },
+            { word: "Catalyst", match: "Inhibitor" },
+            { word: "Facilitate", match: "Hamper" },
+            { word: "Incorrigible", match: "Tractable" },
+            { word: "Militant", match: "Peaceable" },
+            { word: "Paramount", match: "Secondary" },
+            { word: "Rebut", match: "Confirm" },
+            { word: "Reprimand", match: "Praise" },
+            { word: "Servitude", match: "Liberty" },
+            { word: "Slapdash", match: "Painstaking" }
+        ];
+
+        function initMemoryGame(containerId, pairs) {
+            const container = document.getElementById(containerId);
+            if (container.children.length > 0) return; // Already initialized
+            
+            // Create cards array
+            const cards = [];
+            pairs.forEach((pair, index) => {
+                cards.push({ text: pair.word, pairId: index, type: 'word' });
+                cards.push({ text: pair.match, pairId: index, type: 'match' });
+            });
+            
+            // Shuffle cards
+            cards.sort(() => Math.random() - 0.5);
+            
+            let selectedCards = [];
+            let matchedPairs = 0;
+            
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'memory-card';
+                cardDiv.textContent = card.text;
+                cardDiv.dataset.pairId = card.pairId;
+                cardDiv.dataset.type = card.type;
+                cardDiv.dataset.index = index;
+                
+                cardDiv.addEventListener('click', function() {
+                    if (this.classList.contains('matched') || 
+                        this.classList.contains('flipped') || 
+                        selectedCards.length >= 2) {
+                        return;
+                    }
+                    
+                    this.classList.add('flipped');
+                    selectedCards.push(this);
+                    
+                    if (selectedCards.length === 2) {
+                        const card1 = selectedCards[0];
+                        const card2 = selectedCards[1];
+                        
+                        if (card1.dataset.pairId === card2.dataset.pairId && 
+                            card1.dataset.type !== card2.dataset.type) {
+                            // Match!
+                            setTimeout(() => {
+                                card1.classList.remove('flipped');
+                                card2.classList.remove('flipped');
+                                card1.classList.add('matched');
+                                card2.classList.add('matched');
+                                matchedPairs++;
+                                
+                                if (matchedPairs === pairs.length) {
+                                    setTimeout(() => {
+                                        alert('🎉 Congratulations! You matched all pairs!');
+                                    }, 500);
+                                }
+                            }, 500);
+                        } else {
+                            // No match
+                            setTimeout(() => {
+                                card1.classList.add('wrong');
+                                card2.classList.add('wrong');
+                                setTimeout(() => {
+                                    card1.classList.remove('flipped', 'wrong');
+                                    card2.classList.remove('flipped', 'wrong');
+                                }, 500);
+                            }, 500);
+                        }
+                        
+                        setTimeout(() => {
+                            selectedCards = [];
+                        }, 1000);
+                    }
+                });
+                
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function initSynonymGame() {
+            initMemoryGame('synonym-game', synonymPairs);
+        }
+
+        function initAntonymGame() {
+            initMemoryGame('antonym-game', antonymPairs);
+        }
+
+        // Initialize first slide
+        showSlide(1);
+    </script>
+</body>
+</html>
