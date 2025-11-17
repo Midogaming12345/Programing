@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Vocabulary Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        .slide-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes zoom-in {
+            from { transform: scale(0) translateZ(-1000px); opacity: 0; }
+            to { transform: scale(1) translateZ(0); opacity: 1; }
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff;
+            animation: zoom-in 1.5s ease-out;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #00f3ff;
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            color: #00f3ff;
+            margin-bottom: 20px;
+            animation: zoom-in 2s ease-out;
+        }
+
+        .definition {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid #00f3ff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+
+        .synonyms, .antonyms {
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
+
+        .synonyms {
+            color: #00ff88;
+        }
+
+        .antonyms {
+            color: #ff6b9d;
+        }
+
+        .examples {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .example {
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(138, 43, 226, 0.2);
+            border-left: 4px solid #8a2be2;
+            border-radius: 8px;
+        }
+
+        .orb {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #00f3ff, #8a2be2, #000);
+            box-shadow: 0 0 60px #00f3ff, inset 0 0 40px rgba(0, 243, 255, 0.5);
+            margin: 30px auto;
+            animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #00f3ff, #8a2be2);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.8);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .riddle-box {
+            background: rgba(138, 43, 226, 0.3);
+            border: 3px solid #8a2be2;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.6);
+        }
+
+        .riddle-text {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .hint {
+            font-size: 1.2rem;
+            color: #00ff88;
+            font-style: italic;
+        }
+
+        .reveal-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #00ff88, #00f3ff);
+            border: none;
+            border-radius: 25px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s;
+        }
+
+        .reveal-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.8);
+        }
+
+        .answer {
+            display: none;
+            margin-top: 30px;
+            font-size: 2rem;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            animation: zoom-in 1s ease-out;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question {
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid #00f3ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .question.active {
+            display: block;
+            animation: zoom-in 0.5s ease-out;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option:hover {
+            background: rgba(138, 43, 226, 0.5);
+            transform: translateX(10px);
+        }
+
+        .option.correct {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .option.incorrect {
+            background: rgba(255, 107, 157, 0.3);
+            border-color: #ff6b9d;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+
+        .score {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: #00ff88;
+        }
+
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #8a2be2, #00f3ff);
+            border: 3px solid #00f3ff;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            transition: all 0.3s;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: rgba(0, 243, 255, 0.2);
+            border-color: #00ff88;
+        }
+
+        .memory-card.matched {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            cursor: default;
+        }
+
+        .memory-card .back {
+            display: none;
+        }
+
+        .memory-card.flipped .back,
+        .memory-card.matched .back {
+            display: block;
+        }
+
+        .memory-card.flipped .front,
+        .memory-card.matched .front {
+            display: none;
+        }
+
+        .game-stats {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .spaceship {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes slide-in-left {
+            from { transform: translateX(-100vw); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slide-in-right {
+            from { transform: translateX(100vw); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .word-title {
+            font-size: 3.5rem;
+            color: #00f3ff;
+            text-shadow: 0 0 30px #00f3ff;
+            margin-bottom: 10px;
+        }
+
+        .word-type {
+            font-size: 1.5rem;
+            color: #8a2be2;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #00f3ff, #8a2be2, #00ff88);
+            transition: width 0.3s;
+            z-index: 1000;
+            box-shadow: 0 0 10px #00f3ff;
+        }
+
+        .slide-number {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+            color: #00f3ff;
+            font-family: 'Orbitron', sans-serif;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-number" id="slideNumber">1 / 15</div>
+    
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Welcome -->
+        <div class="slide active" id="slide1">
+            <div class="stars" id="stars1"></div>
+            <div class="slide-content">
+                <h1>Welcome to Our English Session</h1>
+                <p class="subtitle">Embark on a Journey Through Vocabulary!</p>
+                <p style="font-size: 1.5rem; margin-top: 20px;">Get ready to explore words in the cosmos of language.</p>
+                <div class="orb"></div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Riddle -->
+        <div class="slide" id="slide2">
+            <div class="stars" id="stars2"></div>
+            <div class="slide-content">
+                <h2>Solve the Riddle to Unlock the Vocab!</h2>
+                <div class="riddle-box">
+                    <p class="riddle-text">"I can make things change without lifting a finger, speed up reactions or spark a war. I'm not alive, but I cause action—what am I?"</p>
+                    <p class="hint">Hint: Think of chemistry or history!</p>
+                    <button class="reveal-btn" onclick="revealAnswer()">Reveal Answer</button>
+                    <div class="answer" id="riddleAnswer">
+                        <p>✨ CATALYST ✨</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arbitrary -->
+        <div class="slide" id="slide3">
+            <div class="stars" id="stars3"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Arbitrary</h2>
+                <p class="word-type">(Adjective)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Unreasonable; based on one's wishes or whims without regard for reason or fairness.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Capricious, high-handed, autocratic</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Reasoned, rational, objective, equitable</p>
+                <div class="examples">
+                    <div class="example">A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.</div>
+                    <div class="example">I don't know why I chose that one; it was a completely arbitrary decision.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Catalyst -->
+        <div class="slide" id="slide4">
+            <div class="stars" id="stars4"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Catalyst</h2>
+                <p class="word-type">(Noun)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> A substance that causes or hastens a chemical reaction; any agent that causes change.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Stimulus, spur, instigator</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Inhibitor</p>
+                <div class="examples">
+                    <div class="example">Enzymes are catalysts that aid in the digestion of food.</div>
+                    <div class="example">The bombing attack was the catalyst for war.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Facilitate -->
+        <div class="slide" id="slide5">
+            <div class="stars" id="stars5"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Facilitate</h2>
+                <p class="word-type">(Verb)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> To make easier, to assist.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Ease, smooth the way, simplify</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Hamper, hinder, obstruct, impede</p>
+                <div class="examples">
+                    <div class="example">The Federal Reserve Board may lower interest rates in order to facilitate economic growth.</div>
+                    <div class="example">Her rise to power was facilitated by her influential friends.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Incorrigible -->
+        <div class="slide" id="slide6">
+            <div class="stars" id="stars6"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Incorrigible</h2>
+                <p class="word-type">(Adjective)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Not able to be corrected; beyond control.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Unruly, intractable, incurable, inveterate</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Tractable, docile, curable, reparable</p>
+                <div class="examples">
+                    <div class="example">Criminals deemed incorrigible can expect to receive maximum sentences for their offenses against society.</div>
+                    <div class="example">He is always the class clown, and his teachers say he is incorrigible.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Militant -->
+        <div class="slide" id="slide7">
+            <div class="stars" id="stars7"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Militant</h2>
+                <p class="word-type">(Adjective)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Given to fighting; active and aggressive in support of a cause; (n.) an activist.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Truculent</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Unassertive, peaceable, passive</p>
+                <div class="examples">
+                    <div class="example">In the struggle for civil rights, Martin Luther King, Jr., advocated peaceful rather than militant protest.</div>
+                    <div class="example">Elizabeth Cady Stanton was a militant in the fight for woman suffrage.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Paramount -->
+        <div class="slide" id="slide8">
+            <div class="stars" id="stars8"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Paramount</h2>
+                <p class="word-type">(Adjective)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Chief in importance, above all others.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Supreme, primary, dominant</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Secondary, subordinate, ancillary</p>
+                <div class="examples">
+                    <div class="example">The safety of the passengers is paramount to the airline industry.</div>
+                    <div class="example">The patient's well-being was the doctor's paramount concern during the surgery.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Rebut -->
+        <div class="slide" id="slide9">
+            <div class="stars" id="stars9"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Rebut</h2>
+                <p class="word-type">(Verb)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> To offer arguments or evidence that contradict an assertion; to refute.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Disprove, confute, shoot holes in</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Confirm, corroborate, substantiate</p>
+                <div class="examples">
+                    <div class="example">He was able to rebut the accusations made against him with evidence of his innocence.</div>
+                    <div class="example">Attempts to rebut the myths could be easily batted away as a case of no smoke without fire.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Reprimand -->
+        <div class="slide" id="slide10">
+            <div class="stars" id="stars10"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Reprimand</h2>
+                <p class="word-type">(Verb)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> To scold; find fault with; (n.) a rebuke.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> (V.) Reproach; (n.) Reproof</p>
+                <p class="antonyms"><strong>Antonyms:</strong> (V.) Pat on the back</p>
+                <div class="examples">
+                    <div class="example">You'll get a five thousand pound fine and a severe reprimand for having police lights on your car in the UK.</div>
+                    <div class="example">When I misbehaved in school, my teacher sent me home with a written reprimand for my parents to sign.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Servitude -->
+        <div class="slide" id="slide11">
+            <div class="stars" id="stars11"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Servitude</h2>
+                <p class="word-type">(Noun)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Slavery, forced labor.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Bondage, thralldom</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Liberty</p>
+                <div class="examples">
+                    <div class="example">My daughter has to work in servitude until she can earn enough money to replace the big-screened television she broke.</div>
+                    <div class="example">In the past, attempts to commit murder were punishable by penal servitude for life.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Slapdash -->
+        <div class="slide" id="slide12">
+            <div class="stars" id="stars12"></div>
+            <div class="slide-content">
+                <div class="orb"></div>
+                <h2 class="word-title">Slapdash</h2>
+                <p class="word-type">(Adjective)</p>
+                <div class="definition">
+                    <strong>Definition:</strong> Careless and hasty.
+                </div>
+                <p class="synonyms"><strong>Synonyms:</strong> Cursory, perfunctory, slipshod</p>
+                <p class="antonyms"><strong>Antonyms:</strong> Painstaking, thorough, in-depth</p>
+                <div class="examples">
+                    <div class="example">We ran out of time and had to use a slapdash solution that failed to fix the problem.</div>
+                    <div class="example">Her slapdash approach to studying resulted in a poor grade on the exam.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Quiz -->
+        <div class="slide" id="slide13">
+            <div class="stars" id="stars13"></div>
+            <div class="slide-content">
+                <h2>Test Your Knowledge: Vocab Quiz in Space!</h2>
+                <div class="quiz-container" id="quizContainer">
+                    <!-- Questions will be generated by JavaScript -->
+                </div>
+                <div class="score" id="quizScore"></div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Memory Game - Synonyms -->
+        <div class="slide" id="slide14">
+            <div class="stars" id="stars14"></div>
+            <div class="slide-content">
+                <h2>Memory Match: Words & Synonyms</h2>
+                <div class="game-stats">
+                    <span>Matches: <span id="synMatches">0</span> / 10</span> | 
+                    <span>Moves: <span id="synMoves">0</span></span>
+                </div>
+                <div class="memory-game" id="synonymGame">
+                    <!-- Cards will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Memory Game - Antonyms -->
+        <div class="slide" id="slide15">
+            <div class="stars" id="stars15"></div>
+            <div class="slide-content">
+                <h2>Memory Match: Words & Antonyms</h2>
+                <div class="game-stats">
+                    <span>Matches: <span id="antMatches">0</span> / 10</span> | 
+                    <span>Moves: <span id="antMoves">0</span></span>
+                </div>
+                <div class="memory-game" id="antonymGame">
+                    <!-- Cards will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 15;
+
+        // Vocabulary data
+        const vocabData = {
+            arbitrary: { syn: 'capricious', ant: 'rational' },
+            catalyst: { syn: 'stimulus', ant: 'inhibitor' },
+            facilitate: { syn: 'ease', ant: 'hamper' },
+            incorrigible: { syn: 'unruly', ant: 'tractable' },
+            militant: { syn: 'truculent', ant: 'peaceable' },
+            paramount: { syn: 'supreme', ant: 'secondary' },
+            rebut: { syn: 'disprove', ant: 'confirm' },
+            reprimand: { syn: 'reproach', ant: 'praise' },
+            servitude: { syn: 'bondage', ant: 'liberty' },
+            slapdash: { syn: 'cursory', ant: 'painstaking' }
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What is a synonym for 'arbitrary'?",
+                options: ["Rational", "Capricious", "Equitable"],
+                correct: 1
+            },
+            {
+                question: "In the sentence 'Enzymes are catalysts that aid in digestion,' what does 'catalyst' mean?",
+                options: ["A blocker", "An agent of change", "A synonym for food"],
+                correct: 1
+            },
+            {
+                question: "Antonym of 'facilitate':",
+                options: ["Ease", "Hamper", "Simplify"],
+                correct: 1
+            },
+            {
+                question: "What does 'incorrigible' describe?",
+                options: ["Easily corrected", "Beyond control", "Peaceful"],
+                correct: 1
+            },
+            {
+                question: "Example of 'militant':",
+                options: ["A passive protester", "An aggressive activist", "A quiet leader"],
+                correct: 1
+            },
+            {
+                question: "'Paramount' means:",
+                options: ["Secondary", "Chief in importance", "Subordinate"],
+                correct: 1
+            },
+            {
+                question: "To 'rebut' is to:",
+                options: ["Confirm", "Contradict", "Ignore"],
+                correct: 1
+            },
+            {
+                question: "A 'reprimand' is:",
+                options: ["A reward", "A scolding", "A compliment"],
+                correct: 1
+            },
+            {
+                question: "'Servitude' is similar to:",
+                options: ["Liberty", "Bondage", "Freedom"],
+                correct: 1
+            },
+            {
+                question: "Opposite of 'slapdash':",
+                options: ["Hasty", "Painstaking", "Careless"],
+                correct: 1
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            updateNavigation();
+            initializeQuiz();
+            initializeMemoryGames();
+        });
+
+        // Create animated stars
+        function createStars() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const starsContainer = document.getElementById(`stars${i}`);
+                if (starsContainer) {
+                    for (let j = 0; j < 100; j++) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.left = Math.random() * 100 + '%';
+                        star.style.top = Math.random() * 100 + '%';
+                        star.style.width = Math.random() * 3 + 'px';
+                        star.style.height = star.style.width;
+                        star.style.animationDelay = Math.random() * 3 + 's';
+                        starsContainer.appendChild(star);
+                    }
+                }
+            }
+        }
+
+        // Navigation functions
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function updateNavigation() {
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+            document.getElementById('slideNumber').textContent = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('progressBar').style.width = (currentSlide / totalSlides * 100) + '%';
+        }
+
+        // Riddle reveal
+        function revealAnswer() {
+            document.getElementById('riddleAnswer').style.display = 'block';
+        }
+
+        // Quiz functionality
+        let currentQuestion = 0;
+        let score = 0;
+
+        function initializeQuiz() {
+            const container = document.getElementById('quizContainer');
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                if (index === 0) questionDiv.classList.add('active');
+                
+                questionDiv.innerHTML = `
+                    <p class="question-text">${index + 1}. ${q.question}</p>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectAnswer(${index}, ${i})">${String.fromCharCode(65 + i)}) ${opt}</div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            const question = document.querySelectorAll('.question')[questionIndex];
+            const options = question.querySelectorAll('.option');
+            const correct = quizQuestions[questionIndex].correct;
+            
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === correct) {
+                    opt.classList.add('correct');
+                } else if (i === optionIndex) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (optionIndex === correct) {
+                score++;
+            }
+
+            setTimeout(() => {
+                if (questionIndex < quizQuestions.length - 1) {
+                    question.classList.remove('active');
+                    document.querySelectorAll('.question')[questionIndex + 1].classList.add('active');
+                } else {
+                    document.getElementById('quizScore').textContent = `Quiz Complete! Score: ${score} / ${quizQuestions.length}`;
+                }
+            }, 1500);
+        }
+
+        // Memory Game functionality
+        let synFlippedCards = [];
+        let synMatches = 0;
+        let synMoves = 0;
+        let antFlippedCards = [];
+        let antMatches = 0;
+        let antMoves = 0;
+
+        function initializeMemoryGames() {
+            // Synonym game
+            const synCards = [];
+            Object.keys(vocabData).forEach(word => {
+                synCards.push({ text: word, pair: vocabData[word].syn, id: word });
+                synCards.push({ text: vocabData[word].syn, pair: word, id: word });
+            });
+            shuffleArray(synCards);
+            createMemoryCards('synonymGame', synCards, 'syn');
+
+            // Antonym game
+            const antCards = [];
+            Object.keys(vocabData).forEach(word => {
+                antCards.push({ text: word, pair: vocabData[word].ant, id: word });
+                antCards.push({ text: vocabData[word].ant, pair: word, id: word });
+            });
+            shuffleArray(antCards);
+            createMemoryCards('antonymGame', antCards, 'ant');
+        }
+
+        function createMemoryCards(containerId, cards, gameType) {
+            const container = document.getElementById(containerId);
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'memory-card';
+                cardDiv.innerHTML = `
+                    <div class="front">?</div>
+                    <div class="back">${card.text}</div>
+                `;
+                cardDiv.dataset.pair = card.pair;
+                cardDiv.dataset.id = card.id;
+                cardDiv.dataset.index = index;
+                cardDiv.onclick = () => flipCard(cardDiv, gameType);
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function flipCard(card, gameType) {
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            
+            const flippedCards = gameType === 'syn' ? synFlippedCards : antFlippedCards;
+            
+            if (flippedCards.length < 2) {
+                card.classList.add('flipped');
+                flippedCards.push(card);
+                
+                if (flippedCards.length === 2) {
+                    if (gameType === 'syn') {
+                        synMoves++;
+                        document.getElementById('synMoves').textContent = synMoves;
+                    } else {
+                        antMoves++;
+                        document.getElementById('antMoves').textContent = antMoves;
+                    }
+                    
+                    checkMatch(gameType);
+                }
+            }
+        }
+
+        function checkMatch(gameType) {
+            const flippedCards = gameType === 'syn' ? synFlippedCards : antFlippedCards;
+            const [card1, card2] = flippedCards;
+            
+            setTimeout(() => {
+                if (card1.dataset.id === card2.dataset.id && card1.dataset.index !== card2.dataset.index) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    
+                    if (gameType === 'syn') {
+                        synMatches++;
+                        document.getElementById('synMatches').textContent = synMatches;
+                    } else {
+                        antMatches++;
+                        document.getElementById('antMatches').textContent = antMatches;
+                    }
+                } else {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                }
+                
+                if (gameType === 'syn') {
+                    synFlippedCards = [];
+                } else {
+                    antFlippedCards = [];
+                }
+            }, 1000);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+    </script>
+</body>
+</html>
