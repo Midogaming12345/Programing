@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocabulary - Space Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 100%);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { 
+                transform: scale(0.5) translateZ(-500px);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1) translateZ(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .slide-content {
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            max-width: 1200px;
+            color: white;
+            text-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
+        }
+
+        h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: zoomIn 1s ease-out;
+        }
+
+        h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #00ffff;
+        }
+
+        .subtitle {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #ffaa00;
+        }
+
+        .vocab-card {
+            background: rgba(0, 50, 100, 0.7);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 900px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .definition {
+            font-size: 1.5em;
+            margin: 15px 0;
+            color: #ffffff;
+        }
+
+        .syn-ant {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #aaffaa;
+        }
+
+        .example {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #ffddaa;
+            font-style: italic;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #0066ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 1);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 1.5em;
+            z-index: 1000;
+            background: rgba(0, 50, 100, 0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .rocket {
+            position: absolute;
+            font-size: 3em;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+
+        .riddle-orb {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #ff00ff, #0066ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s ease-in-out infinite;
+            cursor: pointer;
+            margin: 30px auto;
+        }
+
+        .riddle-text {
+            font-size: 1.3em;
+            padding: 20px;
+            color: white;
+        }
+
+        .answer {
+            display: none;
+            font-size: 2em;
+            color: #00ff00;
+            margin-top: 20px;
+            animation: zoomIn 0.5s ease-out;
+        }
+
+        .vocab-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .vocab-item {
+            background: rgba(0, 100, 200, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+            font-size: 1.2em;
+        }
+
+        /* Spinning Wheel Styles */
+        .wheel-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 30px auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #00ffff;
+            position: relative;
+            transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: conic-gradient(
+                from 0deg,
+                #ff0000 0deg 27.69deg,
+                #ff7700 27.69deg 55.38deg,
+                #ffff00 55.38deg 83.08deg,
+                #00ff00 83.08deg 110.77deg,
+                #00ffff 110.77deg 138.46deg,
+                #0000ff 138.46deg 166.15deg,
+                #ff00ff 166.15deg 193.85deg,
+                #ff0077 193.85deg 221.54deg,
+                #77ff00 221.54deg 249.23deg,
+                #00ff77 249.23deg 276.92deg,
+                #0077ff 276.92deg 304.62deg,
+                #7700ff 304.62deg 332.31deg,
+                #ff0000 332.31deg 360deg
+            );
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.8);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000;
+            z-index: 10;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ff0000;
+            z-index: 20;
+        }
+
+        .spin-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+            transition: all 0.3s;
+        }
+
+        .spin-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Game Grid Styles */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .game-box {
+            background: rgba(0, 100, 200, 0.7);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .game-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        .game-box.hidden {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+        }
+
+        .game-box.matched {
+            background: rgba(0, 255, 0, 0.5);
+            border-color: #00ff00;
+        }
+
+        .selected-player {
+            font-size: 2em;
+            color: #ffff00;
+            margin: 20px;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .asteroid {
+            position: absolute;
+            background: #888;
+            border-radius: 50%;
+            animation: spin 5s linear infinite;
+        }
+
+        @keyframes laserBeam {
+            0% { transform: scaleX(0); opacity: 1; }
+            100% { transform: scaleX(1); opacity: 0; }
+        }
+
+        .explosion {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffff00, #ff0000, transparent);
+            border-radius: 50%;
+            animation: explode 1s ease-out;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .launch-rocket {
+            animation: launch 3s ease-out forwards;
+        }
+
+        @keyframes launch {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-1000px) scale(0.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide Counter -->
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">18</span>
+        </div>
+
+        <!-- Slide 1: Welcome -->
+        <div class="slide active" id="slide1">
+            <div class="stars" id="stars1"></div>
+            <div class="planet" style="width: 200px; height: 200px; background: linear-gradient(135deg, #0066ff, #00ffff); top: 10%; right: 10%;"></div>
+            <div class="rocket" style="top: 20%; left: 15%;">🚀</div>
+            <div class="rocket" style="top: 60%; right: 20%;">🛸</div>
+            <div class="slide-content">
+                <h1>Welcome to Our English Session! 🚀</h1>
+                <p class="subtitle">Embark on a cosmic journey through vocabulary in Unit 5 Set A.</p>
+                <p class="definition">Get ready to explore words like stars in the galaxy!</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Riddle -->
+        <div class="slide" id="slide2">
+            <div class="stars" id="stars2"></div>
+            <div class="asteroid" style="width: 80px; height: 80px; top: 15%; left: 10%;"></div>
+            <div class="asteroid" style="width: 60px; height: 60px; top: 70%; right: 15%;"></div>
+            <div class="asteroid" style="width: 100px; height: 100px; bottom: 20%; left: 20%;"></div>
+            <div class="slide-content">
+                <h2>Cosmic Riddle Challenge</h2>
+                <div class="riddle-orb" onclick="revealAnswer()">
+                    <p class="riddle-text">I am a force that sparks change without being consumed, speeding up reactions in a lab or life. What am I?</p>
+                </div>
+                <p class="subtitle">Think about it, space explorers! Click the orb to reveal the answer.</p>
+                <div class="answer" id="riddleAnswer">
+                    <p>✨ CATALYST ✨</p>
+                    <p style="font-size: 0.6em;">This ties into our vocab - get ready to learn more!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Vocab Introduction -->
+        <div class="slide" id="slide3">
+            <div class="stars" id="stars3"></div>
+            <div class="slide-content">
+                <h2>Vocab Unit 5 Set A</h2>
+                <p class="subtitle">Dive into 10 stellar words! Each slide explores one: definition, synonyms, antonyms, and examples.</p>
+                <div class="vocab-list">
+                    <div class="vocab-item">1. Arbitrary</div>
+                    <div class="vocab-item">2. Catalyst</div>
+                    <div class="vocab-item">3. Facilitate</div>
+                    <div class="vocab-item">4. Incorrigible</div>
+                    <div class="vocab-item">5. Militant</div>
+                    <div class="vocab-item">6. Paramount</div>
+                    <div class="vocab-item">7. Rebut</div>
+                    <div class="vocab-item">8. Reprimand</div>
+                    <div class="vocab-item">9. Servitude</div>
+                    <div class="vocab-item">10. Slapdash</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Arbitrary -->
+        <div class="slide" id="slide4">
+            <div class="stars" id="stars4"></div>
+            <div class="asteroid" style="width: 70px; height: 70px; top: 20%; left: 15%; animation: spin 3s linear infinite;"></div>
+            <div class="asteroid" style="width: 90px; height: 90px; top: 50%; right: 10%; animation: spin 2s linear infinite reverse;"></div>
+            <div class="slide-content">
+                <h2>Arbitrary</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (Adj.) unreasonable; based on one's wishes or whims without regard for reason or fairness.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> capricious, high-handed, autocratic</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> reasoned, rational, objective, equitable</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• A judge may be criticized for rulings that appear to be arbitrary and without legal precedent.</p>
+                    <p class="example">• I don't know why I chose that one; it was a completely arbitrary decision.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Catalyst -->
+        <div class="slide" id="slide5">
+            <div class="stars" id="stars5"></div>
+            <div class="slide-content">
+                <h2>Catalyst</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (N.) a substance that causes or hastens a chemical reaction; any agent that causes change.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> stimulus, spur, instigator</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• Enzymes are catalysts that aid in the digestion of food.</p>
+                    <p class="example">• The bombing attack was the catalyst for war.</p>
+                </div>
+                <div class="explosion" style="top: 10%; left: 20%;"></div>
+                <div class="explosion" style="top: 70%; right: 15%;"></div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Facilitate -->
+        <div class="slide" id="slide6">
+            <div class="stars" id="stars6"></div>
+            <div class="slide-content">
+                <h2>Facilitate</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (V.) to make easier, to assist.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> ease, smooth the way, simplify</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> hamper, hinder, obstruct, impede</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• The Federal Reserve Board may lower interest rates in order to facilitate economic growth.</p>
+                    <p class="example">• Her rise to power was facilitated by her influential friends.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Incorrigible -->
+        <div class="slide" id="slide7">
+            <div class="stars" id="stars7"></div>
+            <div class="asteroid" style="width: 120px; height: 120px; top: 30%; left: 10%; animation: spin 1s linear infinite;"></div>
+            <div class="slide-content">
+                <h2>Incorrigible</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (Adj.) not able to be corrected; beyond control.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> unruly, intractable, incurable, inveterate</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> tractable, docile, curable, reparable</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• Criminals deemed incorrigible can expect to receive maximum sentences for their offenses against society.</p>
+                    <p class="example">• He is always the class clown, and his teachers say he is incorrigible.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Militant -->
+        <div class="slide" id="slide8">
+            <div class="stars" id="stars8"></div>
+            <div class="slide-content">
+                <h2>Militant</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (Adj.) given to fighting; active and aggressive in support of a cause; (n.) an activist.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> (adj.) truculent</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> (adj.) unassertive, peaceable, passive</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• In the struggle for civil rights, Martin Luther King, Jr., advocated peaceful rather than militant protest.</p>
+                    <p class="example">• Elizabeth Cady Stanton was a militant in the fight for woman suffrage.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Paramount -->
+        <div class="slide" id="slide9">
+            <div class="stars" id="stars9"></div>
+            <div class="planet" style="width: 250px; height: 250px; background: linear-gradient(135deg, #ffaa00, #ff6600); top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 100px rgba(255, 170, 0, 0.8);"></div>
+            <div class="slide-content">
+                <h2>Paramount</h2>
+                <div class="vocab-card" style="margin-top: 300px;">
+                    <p class="definition"><strong>Definition:</strong> (Adj.) chief in importance, above all others.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> supreme, primary, dominant</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> secondary, subordinate, ancillary</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• The safety of the passengers is paramount to the airline industry.</p>
+                    <p class="example">• The patient's well-being was the doctor's paramount concern during the surgery.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Rebut -->
+        <div class="slide" id="slide10">
+            <div class="stars" id="stars10"></div>
+            <div class="slide-content">
+                <h2>Rebut</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (V.) to offer arguments or evidence that contradict an assertion; to refute.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> disprove, confute, shoot holes in</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> confirm, corroborate, substantiate</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• He was able to rebut the accusations made against him with evidence of his innocence.</p>
+                    <p class="example">• Attempts to rebut the myths could be easily batted away as a case of no smoke without fire.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Reprimand -->
+        <div class="slide" id="slide11">
+            <div class="stars" id="stars11"></div>
+            <div class="slide-content">
+                <h2>Reprimand</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (V.) to scold; find fault with; (n.) a rebuke.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> (v.) reproach; (n.) reproof</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> (v.) pat on the back</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• You'll get a five thousand pound fine and a severe reprimand for having police lights on your car in the UK.</p>
+                    <p class="example">• When I misbehaved in school, my teacher sent me home with a written reprimand for my parents to sign.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Servitude -->
+        <div class="slide" id="slide12">
+            <div class="stars" id="stars12"></div>
+            <div class="slide-content">
+                <h2>Servitude</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (N.) slavery, forced labor.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> bondage, thralldom</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> liberty</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• My daughter has to work in servitude until she can earn enough money to replace the big-screened television she broke.</p>
+                    <p class="example">• In the past, attempts to commit murder were punishable by penal servitude for life.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Slapdash -->
+        <div class="slide" id="slide13">
+            <div class="stars" id="stars13"></div>
+            <div class="slide-content">
+                <h2>Slapdash</h2>
+                <div class="vocab-card">
+                    <p class="definition"><strong>Definition:</strong> (Adj.) careless and hasty.</p>
+                    <p class="syn-ant"><strong>Synonyms:</strong> cursory, perfunctory, slipshod</p>
+                    <p class="syn-ant"><strong>Antonyms:</strong> painstaking, thorough, in-depth</p>
+                    <p class="example"><strong>Examples:</strong></p>
+                    <p class="example">• We ran out of time and had to use a slapdash solution that failed to fix the problem.</p>
+                    <p class="example">• Her slapdash approach to studying resulted in a poor grade on the exam.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Game Round 1 - Words & Synonyms -->
+        <div class="slide" id="slide14">
+            <div class="stars" id="stars14"></div>
+            <div class="slide-content">
+                <h2>Cosmic Vocab Spin – Round 1: Words & Synonyms</h2>
+                <p class="subtitle">Spin the wheel to select a player (1-13)! Then, match the words below.</p>
+                
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel1">
+                        <div class="wheel-center">SPIN</div>
+                    </div>
+                </div>
+                
+                <button class="spin-btn" onclick="spinWheel(1)">🎯 SPIN THE WHEEL</button>
+                <div class="selected-player" id="player1"></div>
+                
+                <div class="game-grid">
+                    <div class="game-box" onclick="toggleBox(this)">Arbitrary</div>
+                    <div class="game-box" onclick="toggleBox(this)">Catalyst</div>
+                    <div class="game-box" onclick="toggleBox(this)">Facilitate</div>
+                    <div class="game-box" onclick="toggleBox(this)">Incorrigible</div>
+                    <div class="game-box" onclick="toggleBox(this)">Militant</div>
+                    <div class="game-box" onclick="toggleBox(this)">capricious</div>
+                    <div class="game-box" onclick="toggleBox(this)">stimulus</div>
+                    <div class="game-box" onclick="toggleBox(this)">ease</div>
+                    <div class="game-box" onclick="toggleBox(this)">unruly</div>
+                    <div class="game-box" onclick="toggleBox(this)">truculent</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Game Round 2 - Words & Synonyms -->
+        <div class="slide" id="slide15">
+            <div class="stars" id="stars15"></div>
+            <div class="slide-content">
+                <h2>Cosmic Vocab Spin – Round 2: More Words & Synonyms</h2>
+                <p class="subtitle">Spin for Player 1-13 again! Match these.</p>
+                
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel2">
+                        <div class="wheel-center">SPIN</div>
+                    </div>
+                </div>
+                
+                <button class="spin-btn" onclick="spinWheel(2)">🎯 SPIN THE WHEEL</button>
+                <div class="selected-player" id="player2"></div>
+                
+                <div class="game-grid">
+                    <div class="game-box" onclick="toggleBox(this)">Paramount</div>
+                    <div class="game-box" onclick="toggleBox(this)">Rebut</div>
+                    <div class="game-box" onclick="toggleBox(this)">Reprimand</div>
+                    <div class="game-box" onclick="toggleBox(this)">Servitude</div>
+                    <div class="game-box" onclick="toggleBox(this)">Slapdash</div>
+                    <div class="game-box" onclick="toggleBox(this)">supreme</div>
+                    <div class="game-box" onclick="toggleBox(this)">disprove</div>
+                    <div class="game-box" onclick="toggleBox(this)">reproach</div>
+                    <div class="game-box" onclick="toggleBox(this)">bondage</div>
+                    <div class="game-box" onclick="toggleBox(this)">cursory</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Game Round 3 - Words & Antonyms -->
+        <div class="slide" id="slide16">
+            <div class="stars" id="stars16"></div>
+            <div class="slide-content">
+                <h2>Cosmic Vocab Spin – Round 3: Words & Antonyms</h2>
+                <p class="subtitle">Spin for Player 1-13! Match antonyms.</p>
+                
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel3">
+                        <div class="wheel-center">SPIN</div>
+                    </div>
+                </div>
+                
+                <button class="spin-btn" onclick="spinWheel(3)">🎯 SPIN THE WHEEL</button>
+                <div class="selected-player" id="player3"></div>
+                
+                <div class="game-grid">
+                    <div class="game-box" onclick="toggleBox(this)">Arbitrary</div>
+                    <div class="game-box" onclick="toggleBox(this)">Facilitate</div>
+                    <div class="game-box" onclick="toggleBox(this)">Incorrigible</div>
+                    <div class="game-box" onclick="toggleBox(this)">Militant</div>
+                    <div class="game-box" onclick="toggleBox(this)">🌟 Bonus</div>
+                    <div class="game-box" onclick="toggleBox(this)">reasoned</div>
+                    <div class="game-box" onclick="toggleBox(this)">hamper</div>
+                    <div class="game-box" onclick="toggleBox(this)">tractable</div>
+                    <div class="game-box" onclick="toggleBox(this)">unassertive</div>
+                    <div class="game-box" onclick="toggleBox(this)">🌟 Bonus</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Game Round 4 - Words & Antonyms -->
+        <div class="slide" id="slide17">
+            <div class="stars" id="stars17"></div>
+            <div class="slide-content">
+                <h2>Cosmic Vocab Spin – Round 4: Final Words & Antonyms</h2>
+                <p class="subtitle">Last spin for Player 1-13! Match and win!</p>
+                
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel4">
+                        <div class="wheel-center">SPIN</div>
+                    </div>
+                </div>
+                
+                <button class="spin-btn" onclick="spinWheel(4)">🎯 SPIN THE WHEEL</button>
+                <div class="selected-player" id="player4"></div>
+                
+                <div class="game-grid">
+                    <div class="game-box" onclick="toggleBox(this)">Paramount</div>
+                    <div class="game-box" onclick="toggleBox(this)">Rebut</div>
+                    <div class="game-box" onclick="toggleBox(this)">Reprimand</div>
+                    <div class="game-box" onclick="toggleBox(this)">Servitude</div>
+                    <div class="game-box" onclick="toggleBox(this)">Slapdash</div>
+                    <div class="game-box" onclick="toggleBox(this)">secondary</div>
+                    <div class="game-box" onclick="toggleBox(this)">confirm</div>
+                    <div class="game-box" onclick="toggleBox(this)">pat on the back</div>
+                    <div class="game-box" onclick="toggleBox(this)">liberty</div>
+                    <div class="game-box" onclick="toggleBox(this)">painstaking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Goodbye -->
+        <div class="slide" id="slide18">
+            <div class="stars" id="stars18"></div>
+            <div class="rocket launch-rocket" style="font-size: 5em; top: 50%; left: 50%; transform: translate(-50%, -50%);">🚀</div>
+            <div class="slide-content">
+                <h1>Farewell, Space Explorers! 🌟</h1>
+                <p class="subtitle">Thanks for joining our English session in space!</p>
+                <p class="definition" style="font-size: 2em;">Keep exploring and learning!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" onclick="previousSlide()">◀ Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 18;
+
+        // Initialize
+        document.getElementById('totalSlides').textContent = totalSlides;
+        createStars();
+
+        function createStars() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const starsContainer = document.getElementById(`stars${i}`);
+                if (starsContainer) {
+                    for (let j = 0; j < 100; j++) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.width = Math.random() * 3 + 'px';
+                        star.style.height = star.style.width;
+                        star.style.left = Math.random() * 100 + '%';
+                        star.style.top = Math.random() * 100 + '%';
+                        star.style.animationDelay = Math.random() * 3 + 's';
+                        starsContainer.appendChild(star);
+                    }
+                }
+            }
+        }
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function revealAnswer() {
+            document.getElementById('riddleAnswer').style.display = 'block';
+        }
+
+        function spinWheel(wheelNum) {
+            const wheel = document.getElementById(`wheel${wheelNum}`);
+            const playerDisplay = document.getElementById(`player${wheelNum}`);
+            const button = event.target;
+            
+            button.disabled = true;
+            
+            // Random player selection (1-13)
+            const selectedPlayer = Math.floor(Math.random() * 13) + 1;
+            
+            // Calculate rotation (multiple full spins + final position)
+            const spins = 5 + Math.random() * 3; // 5-8 full rotations
+            const playerAngle = (selectedPlayer - 1) * (360 / 13);
+            const totalRotation = (spins * 360) + playerAngle;
+            
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            setTimeout(() => {
+                playerDisplay.textContent = `🎯 Player ${selectedPlayer} - Your Turn!`;
+                button.disabled = false;
+            }, 3000);
+        }
+
+        function toggleBox(box) {
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                box.classList.add('matched');
+            } else if (box.classList.contains('matched')) {
+                box.classList.remove('matched');
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+    </script>
+</body>
+</html>
