@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Vocab Presentation - Unit 5 Set A</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+    <style>
+        /* Custom space theme CSS will go here */
+        body {
+            background: linear-gradient(to bottom, #000011, #000033);
+        }
+        .reveal .slides {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="white" opacity="0.8"/><circle cx="20" cy="30" r="0.5" fill="white" opacity="0.6"/><circle cx="80" cy="70" r="0.5" fill="white" opacity="0.7"/><circle cx="10" cy="80" r="0.3" fill="white" opacity="0.5"/><circle cx="90" cy="20" r="0.4" fill="white" opacity="0.6"/></svg>') repeat;
+            background-size: 100px 100px;
+        }
+        .reveal h1, .reveal h2 {
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        .reveal p {
+            color: #cccccc;
+        }
+        .space-text {
+            transform: perspective(500px) rotateX(10deg);
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: perspective(500px) rotateX(10deg) translateY(0px); }
+            50% { transform: perspective(500px) rotateX(10deg) translateY(-10px); }
+        }
+        .orb {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #ffff00, #ff0000);
+            border-radius: 50%;
+            animation: spin 5s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        .vocab-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffff;
+            padding: 20px;
+            margin: 10px;
+            transform: perspective(1000px) rotateY(0deg);
+            transition: transform 0.5s;
+        }
+        .vocab-card:hover {
+            transform: perspective(1000px) rotateY(180deg);
+        }
+        .spin-wheel {
+            width: 300px;
+            height: 300px;
+            background: conic-gradient(red 0deg 72deg, blue 72deg 144deg, green 144deg 216deg, yellow 216deg 288deg, purple 288deg 360deg);
+            border-radius: 50%;
+            animation: spin-wheel 2s ease-out;
+            margin: 0 auto;
+        }
+        @keyframes spin-wheel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(720deg); }
+        }
+        .game-box {
+            display: inline-block;
+            width: 100px;
+            height: 50px;
+            background: #333;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .game-box.hidden {
+            background: #000;
+            color: #000;
+        }
+        .game-box.correct {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slides will be added here -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            backgroundTransition: 'fade'
+        });
+        // Custom JS for interactivity will go here
+    </script>
+</body>
+</html>
