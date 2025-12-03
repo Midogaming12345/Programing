@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفسير سورة فصلت آيتان 21-22</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Amiri', serif;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+            text-align: center;
+        }
+        .slide h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .slide p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            max-width: 800px;
+        }
+        .arabic-text {
+            font-size: 1.5em;
+            margin: 20px 0;
+            direction: rtl;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        /* Slide specific backgrounds */
+        .slide1 {
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+            /* Sunset gradient, add gold accents via pseudo-elements or SVG */
+        }
+        .slide1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="10" fill="gold" text-anchor="middle">ﷺ</text></svg>') no-repeat center;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .slide2 {
+            background: linear-gradient(to bottom, #8fbc8f, #a0522d);
+            /* Earthy green and brown */
+        }
+        .slide2::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="2"/><path d="M30 50 L50 30 L70 50" fill="white"/></svg>') no-repeat center;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .slide3 {
+            background: linear-gradient(to bottom, #191970, #000080);
+            /* Dark blue */
+        }
+        .slide3::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="white" stroke-width="2"/><circle cx="50" cy="50" r="10" fill="white"/></svg>') no-repeat center;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .slide4 {
+            background: linear-gradient(to bottom, #ff4500, #ffa500);
+            /* Red and orange */
+        }
+        .slide4::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="30" rx="15" ry="10" fill="white"/><ellipse cx="35" cy="50" rx="10" ry="15" fill="white"/><ellipse cx="65" cy="50" rx="10" ry="15" fill="white"/><rect x="45" y="60" width="10" height="20" fill="white"/></svg>') no-repeat center;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .slide5 {
+            background: linear-gradient(to bottom, #ffff00, #ffffff);
+            /* Bright yellow to white */
+        }
+        .slide5::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 20 L80 20 L80 80 L20 80 Z" fill="none" stroke="gold" stroke-width="5"/><text x="50" y="55" font-size="20" fill="gold" text-anchor="middle">﷽</text></svg>') no-repeat center;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        @media (max-width: 768px) {
+            .slide h1 {
+                font-size: 2em;
+            }
+            .slide p {
+                font-size: 1em;
+            }
+            .arabic-text {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="slides">
+        <section class="slide slide1">
+            <h1>سورة فصلت (41) - آيتان 21 و22</h1>
+            <p>التصنيف: السورة مكية (نزلت في مكة قبل الهجرة).</p>
+            <p>الموضوع الرئيسي: يتحدث عن شهادة الأعضاء على أفعال الإنسان يوم القيامة، وأن الله يعلم كل شيء، مما يفند ظن الكفار بأن الله لا يعلم كثيراً من أفعالهم.</p>
+        </section>
+        <section class="slide slide2">
+            <h1>التفسير الأول (الآية 21)</h1>
+            <p class="arabic-text">وَقَالُوا لِجُلُودِهِمْ لِمَ شَهِدتُّمْ عَلَيْنَا ۖ قَالُوا أَنطَقَنَا اللَّهُ الَّذِي أَنطَقَ كُلَّ شَيْءٍ وَهُوَ خَلَقَكُمْ أَوَّلَ مَرَّةٍ وَإِلَيْهِ تُرْجَعُونَ.</p>
+            <p>يصف المشهد يوم القيامة حيث يلوم الكفار جلودهم وأعضاءهم لأنها شهدت عليهم بأفعالهم السيئة. تجيب الأعضاء أن الله هو الذي أنطقها، كما أنطق كل شيء، وهو الذي خلقهم أول مرة، وإليه يرجعون. هذا يؤكد أن الله قادر على إحياء الموتى وإنطاق الجمادات للشهادة.</p>
+        </section>
+        <section class="slide slide3">
+            <h1>سبب النزول (الربط بالسياق التاريخي)</h1>
+            <p>نزلت الآيتان بسبب خلاف بين نفر من قريش وثقيف حول الكعبة. قال بعضهم إن الله يسمع حديثهم في الخلوات، وإذا أخفوا أقوالهم فلن يسمعهم. فنزلت الآيتان لتؤكد أن الله يسمع كل شيء، سواء جهراً أو إخفاءً، وأن الأعضاء ستشهد عليهم يوم القيامة. هذا يفسر ظنهم بأن الله لا يعلم كثيراً من أفعالهم.</p>
+            <p>الربط بالتفسير: يبرز كيف أن هذا الظن الفاسد هو سبب خسرانهم، حيث كانوا يظنون أن الله لا يعلم أسرارهم، لكنهم كانوا يجاهرون بالكفر والمعاصي.</p>
+        </section>
+        <section class="slide slide4">
+            <h1>التفسير الثاني (الآية 22)</h1>
+            <p class="arabic-text">وَمَا كُنتُمْ تَسْتَتِرُونَ أَن يَشْهَدَ عَلَيْكُمْ سَمْعُكُمْ وَلَا أَبْصَارُكُمْ وَلَا جُلُودُكُمْ وَلَٰكِن ظَنَنتُمْ أَنَّ اللَّهَ لَا يَعْلَمُ كَثِيرًا مِّمَّا تَعْمَلُونَ.</p>
+            <p>تقول الأعضاء للكفار: ما كنتم تتكتمون عنا (الأعضاء) فيما كنتم تفعلونه، بل كنتم تجاهرون بالمعاصي. لم تكن تخفون أفعالكم عن الله، لكنكم كنتم تظنون أنه لا يعلم كثيراً منها. هذا الظن هو الذي أرداهم وجعلهم خاسرين يوم القيامة.</p>
+            <p>الدروس: يؤكد على علم الله الشامل، وأن الإنسان مسؤول عن كل أفعاله، حتى الخفية، وأن الشهادة ستكون شاملة من الأعضاء نفسها.</p>
+        </section>
+        <section class="slide slide5">
+            <h1>خاتمة وملخص</h1>
+            <p>التنقل بين التفسير وسبب النزول: بدأنا بالتفسير لفهم المعنى الحرفي، ثم ربطناه بسبب النزول للسياق التاريخي، ثم عدن إلى تفسير أعمق للآية الثانية، مما يظهر كيف يفسر القرآن نفسه ويرد على شبهات الكفار.</p>
+            <p>الرسالة الرئيسية: الله يعلم كل شيء، ولا يمكن الإفلات من المسؤولية. السورة مكية، مما يعكس دعوة النبي محمد صلى الله عليه وسلم.</p>
+        </section>
+    </div>
+    <div class="navigation">
+        <button class="nav-btn" id="prev">السابق</button>
+        <button class="nav-btn" id="next">التالي</button>
+    </div>
+    <script>
+        let currentSlide = 0;
+        const slides = document.getElementById('slides');
+        const totalSlides = 5;
+
+        document.getElementById('next').addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                slides.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            }
+        });
+
+        document.getElementById('prev').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                slides.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            }
+        });
+    </script>
+</body>
+</html>
